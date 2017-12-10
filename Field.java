@@ -25,7 +25,6 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener{
         mover = new Mover(anim);
         anim.setPaintClient(mover);
         mover.addPropertyChangeListener(this);
-
     }
     
     @Override

@@ -11,9 +11,10 @@ import java.beans.PropertyChangeListener;
  *
  * @author Mawel
  */
-public class Field extends javax.swing.JFrame implements PropertyChangeListener{
+public class Field extends javax.swing.JFrame implements PropertyChangeListener {
 
     protected Mover mover;
+    protected String flag;
 
     /**
      * Creates new form Field
@@ -25,8 +26,10 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener{
         mover = new Mover(anim);
         anim.setPaintClient(mover);
         mover.addPropertyChangeListener(this);
+
+        anim.repaint();
     }
-    
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         //on hit
@@ -48,18 +51,36 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener{
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         Frame = new javax.swing.JPanel();
         ui = new javax.swing.JPanel();
         button_RESET = new javax.swing.JButton();
         button_ON_OFF = new javax.swing.JButton();
+        checkbox_chaser1 = new javax.swing.JCheckBox();
+        checkbox_chaser2 = new javax.swing.JCheckBox();
+        button_POS_r = new javax.swing.JButton();
+        button_POS_c1 = new javax.swing.JButton();
+        button_POS_c2 = new javax.swing.JButton();
+        numberfield_POS_r = new JNumberField();
+        numberfield_POS_c1 = new JNumberField();
+        numberfield_POS_c2 = new JNumberField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        numberfield_VEL_z = new JNumberField();
+        numberfield_VEL_c1 = new JNumberField();
+        numberfield_VEL_c2 = new JNumberField();
         anim = new JMath();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Frame.setLayout(new java.awt.BorderLayout());
 
-        ui.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagLayout uiLayout = new java.awt.GridBagLayout();
+        uiLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
+        uiLayout.rowHeights = new int[] {0, 5, 0, 5, 0};
+        ui.setLayout(uiLayout);
 
         button_RESET.setText("RESET");
         button_RESET.addActionListener(new java.awt.event.ActionListener() {
@@ -67,7 +88,10 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener{
                 button_RESETActionPerformed(evt);
             }
         });
-        ui.add(button_RESET, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        ui.add(button_RESET, gridBagConstraints);
 
         button_ON_OFF.setText("START");
         button_ON_OFF.addActionListener(new java.awt.event.ActionListener() {
@@ -75,39 +99,177 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener{
                 button_ON_OFFActionPerformed(evt);
             }
         });
-        ui.add(button_ON_OFF, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        ui.add(button_ON_OFF, gridBagConstraints);
+
+        checkbox_chaser1.setText("Verfolger V1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 6);
+        ui.add(checkbox_chaser1, gridBagConstraints);
+
+        checkbox_chaser2.setText("Verfolger V2");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        ui.add(checkbox_chaser2, gridBagConstraints);
+
+        button_POS_r.setText("Position Z  ");
+        button_POS_r.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_POS_rActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        ui.add(button_POS_r, gridBagConstraints);
+
+        button_POS_c1.setText("Position V1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 6);
+        ui.add(button_POS_c1, gridBagConstraints);
+
+        button_POS_c2.setText("Position V2");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
+        ui.add(button_POS_c2, gridBagConstraints);
+
+        numberfield_POS_r.setColumns(10);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 0;
+        ui.add(numberfield_POS_r, gridBagConstraints);
+
+        numberfield_POS_c1.setColumns(10);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 6);
+        ui.add(numberfield_POS_c1, gridBagConstraints);
+
+        numberfield_POS_c2.setColumns(10);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 4;
+        ui.add(numberfield_POS_c2, gridBagConstraints);
+
+        jLabel1.setText("v Z:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        ui.add(jLabel1, gridBagConstraints);
+
+        jLabel2.setText("v V1:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        ui.add(jLabel2, gridBagConstraints);
+
+        jLabel3.setText("v V2:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        ui.add(jLabel3, gridBagConstraints);
+
+        numberfield_VEL_z.setColumns(4);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 6);
+        ui.add(numberfield_VEL_z, gridBagConstraints);
+
+        numberfield_VEL_c1.setColumns(4);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 2;
+        ui.add(numberfield_VEL_c1, gridBagConstraints);
+
+        numberfield_VEL_c2.setColumns(4);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 4;
+        ui.add(numberfield_VEL_c2, gridBagConstraints);
 
         Frame.add(ui, java.awt.BorderLayout.SOUTH);
+
+        anim.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                animMouseClicked(evt);
+            }
+        });
         Frame.add(anim, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(Frame, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    public void uiSetRunning() {
+        button_RESET.setEnabled(false);
+        button_POS_r.setEnabled(false);
+        button_POS_c1.setEnabled(false);
+        button_POS_c2.setEnabled(false);
+    }
+
+    public void uiSetNotRunning() {
+        button_RESET.setEnabled(true);
+        if (mover.data_runner.isEmpty()) {
+        button_POS_r.setEnabled(true);
+        button_POS_c1.setEnabled(true);
+        button_POS_c2.setEnabled(true);
+        }
+    }
 
     private void button_ON_OFFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ON_OFFActionPerformed
         if (mover.weiter == false) {
             if (button_ON_OFF.getText().equals("START")) {
                 button_ON_OFF.setText("STOP");
-                button_RESET.setEnabled(false);
+                uiSetRunning();
             }
-            if (mover.data_runner.isEmpty()) {
+            if (mover.data_runner.size() < 2) {
                 mover.init();
             }
             mover.start();
         } else if (mover.weiter == true) {
             mover.stop();
-            button_RESET.setEnabled(true);
             if (button_ON_OFF.getText().equals("STOP")) {
                 button_ON_OFF.setText("START");
+                uiSetNotRunning();
             }
         }
     }//GEN-LAST:event_button_ON_OFFActionPerformed
 
     private void button_RESETActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RESETActionPerformed
         mover.reset();
-        button_ON_OFF.setEnabled(true);
+        uiSetNotRunning();
     }//GEN-LAST:event_button_RESETActionPerformed
+
+    private void button_POS_rActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_POS_rActionPerformed
+        flag = "pos_r";
+    }//GEN-LAST:event_button_POS_rActionPerformed
+
+    private void animMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animMouseClicked
+        if (flag.equals("pos_r")) {
+            double x = evt.getX();
+            double y = evt.getY();
+            //Frame coords to MathPainter coords
+            double mx = (x * ((x - (anim.getWidth() / 2)) / x)) / anim.getUnit();
+            double my = -(y * ((y - (anim.getHeight() / 2)) / y)) / anim.getUnit();
+
+            mover.data_runner.add(new Punkt(mx, my));
+            flag = "";
+        }
+
+    }//GEN-LAST:event_animMouseClicked
 
     /**
      * @param args the command line arguments
@@ -148,7 +310,21 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener{
     private javax.swing.JPanel Frame;
     private JMath anim;
     private javax.swing.JButton button_ON_OFF;
+    private javax.swing.JButton button_POS_c1;
+    private javax.swing.JButton button_POS_c2;
+    private javax.swing.JButton button_POS_r;
     private javax.swing.JButton button_RESET;
+    private javax.swing.JCheckBox checkbox_chaser1;
+    private javax.swing.JCheckBox checkbox_chaser2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private JNumberField numberfield_POS_c1;
+    private JNumberField numberfield_POS_c2;
+    private JNumberField numberfield_POS_r;
+    private JNumberField numberfield_VEL_c1;
+    private JNumberField numberfield_VEL_c2;
+    private JNumberField numberfield_VEL_z;
     private javax.swing.JPanel ui;
     // End of variables declaration//GEN-END:variables
 }

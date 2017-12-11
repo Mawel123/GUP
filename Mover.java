@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class Mover implements MathPainter, Runnable {
 
-    protected Thread painter;
+    protected Thread nextPunkt;
     protected JMath anim;
     protected boolean weiter;
     public long t;
@@ -66,12 +66,15 @@ public class Mover implements MathPainter, Runnable {
         anim.setZero(w / 2, h / 2);
         anim.setBackground(Color.black);
 
+        out_x = anim.getWidth() / 65.0;
+        out_y = anim.getHeight() / 65.0;
+
         g.setColor(Color.green);
         Rectangle2D.Double rect1;
         rect1 = new Rectangle2D.Double(-out_x, -out_y, 2 * out_x, 2 * out_y);
         g.draw(rect1);
 
-        if (!data_runner.isEmpty() && !data_chaser1.isEmpty() && !data_chaser2.isEmpty()) {
+        if (data_runner.size() > 1 && data_chaser1.size() > 1 && data_chaser2.size() > 1) {
             g.setColor(Color.white);
             for (int i = 0; i < (data_runner.size() - 1); i++) {
                 runner_p1 = data_runner.get(i);
@@ -124,14 +127,20 @@ public class Mover implements MathPainter, Runnable {
         out_x = anim.getWidth() / 65.0;
         out_y = anim.getHeight() / 65.0;
         //runner
-        r_x = 0;
-        r_y = 0;
-        //chser1
-        c1_x = -3;
-        c1_y = 6;
+        if (data_runner.isEmpty()) {
+            r_x = 0;
+            r_y = 0;
+        }
+        //chaser1
+        if (data_chaser1.isEmpty()) {
+            c1_x = -3;
+            c1_y = 6;
+        }
         //chaser2
-        c2_x = -3;
-        c2_y = -6;
+        if (data_chaser2.isEmpty()) {
+            c2_x = -3;
+            c2_y = -6;
+        }
         //build start pos
         data_runner.add(new Punkt(r_x, r_y));
         data_chaser1.add(new Punkt(c1_x, c1_y));
@@ -152,14 +161,25 @@ public class Mover implements MathPainter, Runnable {
             } catch (InterruptedException ie) {
                 //tue nichts
             }
-            //v_runner line
-            rd_x = -0.01;
-            rd_y = 0;
-            //v_runner sin
+            //v runner
+            rd_x = 0.01;
+            rd_y = 0.01;
+            //runner: next Punkt line
+//            r_x += rd_x;
+//            r_y += rd_y;
+            //runner: next Punkt sin
+            t += dT;
+            Punkt p = data_runner.get(data_runner.size() - 1);
+            p.x += rd_x;
+            p.y += 3 * rd_x * Math.sin(0.005 * t);
+            // runner: next Punkt circ
+//            t += dT;
+//            r_x += 2 * rd_x * Math.cos(0.002 * t);
+//            r_y += 2 * rd_x * Math.sin(0.002 * t);
 
             //v chaser1
-            double target_x = r_x - c1_x;
-            double target_y = r_y - c1_y;
+            double target_x = p.x - c1_x;
+            double target_y = p.y - c1_y;
             double norm = Math.sqrt(target_x * target_x + target_y * target_y);
             target_x /= norm;
             target_y /= norm;
@@ -167,25 +187,14 @@ public class Mover implements MathPainter, Runnable {
             c1_dy = target_y * 0.01;
 
             //v chaser2
-            target_x = r_x - c2_x;
-            target_y = r_y - c2_y;
+            target_x = p.x - c2_x;
+            target_y = p.y - c2_y;
             norm = Math.sqrt(target_x * target_x + target_y * target_y);
             target_x /= norm;
             target_y /= norm;
             c2_dx = target_x * 0.015;
             c2_dy = target_y * 0.015;
 
-            //runner: next Punkt line
-//            r_x += rd_x;
-//            r_y += rd_y;
-            //runner: next Punkt sin
-//            t += dT;
-//            r_x += rd_x;
-//            r_y += 3 * rd_x * Math.sin(0.005 * t);
-            // runner: next Punkt circ
-            t += dT;
-            r_x += 2 * rd_x * Math.cos(0.002 * t);
-            r_y += 2 * rd_x * Math.sin(0.002 * t);
             //chaser1: next Punkt
             c1_x += c1_dx;
             c1_y += c1_dy;
@@ -195,31 +204,31 @@ public class Mover implements MathPainter, Runnable {
 
             //hit detection
             double d_1, d_2;
-            d_1 = Math.sqrt(Math.pow(r_x - c1_x, 2) + Math.pow(r_y - c1_y, 2));
-            d_2 = Math.sqrt(Math.pow(r_x - c2_x, 2) + Math.pow(r_y - c2_y, 2));
+            d_1 = Math.sqrt(Math.pow(p.x - c1_x, 2) + Math.pow(p.y - c1_y, 2));
+            d_2 = Math.sqrt(Math.pow(p.x - c2_x, 2) + Math.pow(p.y - c2_y, 2));
             if (d_1 < 0.1 || d_2 < 0.1) {
                 pcs.firePropertyChange("hit", null, null);
             }
             //out detection
-            if (Math.abs(r_x) >= out_x || Math.abs(r_y) >= out_y) {
+            if (Math.abs(p.x) >= out_x || Math.abs(p.y) >= out_y) {
                 pcs.firePropertyChange("hit", null, null);
             }
 
             //build arraylist
-            data_runner.add(new Punkt(r_x, r_y));
+            data_runner.add(new Punkt(p.x, p.y));
             data_chaser1.add(new Punkt(c1_x, c1_y));
             data_chaser2.add(new Punkt(c2_x, c2_y));
             anim.repaint();
 
         }
-        painter = null;
+        nextPunkt = null;
     }
 
     public void start() {
-        if (painter == null) {
-            painter = new Thread(this);
+        if (nextPunkt == null) {
+            nextPunkt = new Thread(this);
             weiter = true;
-            painter.start();
+            nextPunkt.start();
         }
     }
 

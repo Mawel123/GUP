@@ -27,27 +27,13 @@ public class Simulation implements MathPainter, Runnable {
     public PropertyChangeSupport pcs;
 
     Graphics2D g;
-
-    //runner
-    ArrayList<Coordinate> dataRunner = new ArrayList<>();
-//    private Coordinate runner_p1, runner_p2;
-    private double r_x, r_y;
-    private double rd_x, rd_y;
-
-    //chaser1
-    ArrayList<Coordinate> dataChaserBlue = new ArrayList<>();
-    private Coordinate chaserBlue_p1, chaserRed_p2;
-    private double c1_x, c1_y;
-    private double c1_dx, c1_dy;
-
-    //chaser2
-    ArrayList<Coordinate> dataChaserRed = new ArrayList<>();
-    private Coordinate chaser2_p1, chaser2_p2;
-    private double c2_x, c2_y;
-    private double c2_dx, c2_dy;
-
+    final double guesswork = 65.0;
     private double boundingBox_x, boundingBox_y;
-
+    
+    ArrayList<Vector> dataRunner = new ArrayList<>();
+    ArrayList<Vector> dataChaserBlue = new ArrayList<>();
+    ArrayList<Vector> dataChaserRed = new ArrayList<>();
+    
     public Simulation(JMath anim) {
         this.animation = anim;
         anim.setEnableMouse(false);
@@ -62,109 +48,75 @@ public class Simulation implements MathPainter, Runnable {
         pcs.addPropertyChangeListener(interessent);
     }
 
-    private void fillCircle(Coordinate lowerLeftCorner, double radius) {
-        Ellipse2D.Double circle = new Ellipse2D.Double(lowerLeftCorner.getX() - radius, lowerLeftCorner.getY() - radius, 2 * radius, 2 * radius);
+    protected void fillCircle(Vector lowerLeftCorner, double radius) {
+        Ellipse2D.Double circle = new Ellipse2D.Double(lowerLeftCorner.getX() - radius, lowerLeftCorner.getY() - radius,
+                2 * radius, 2 * radius);
         g.fill(circle);
     }
-    
-    private void drawLine(Coordinate startingPoint, Coordinate endPoint) {
-        Line2D.Double line = new Line2D.Double(startingPoint.getX(), startingPoint.getY(), endPoint.getX(), endPoint.getY());
+
+    protected void drawLine(Vector startingPoint, Vector endPoint) {
+        Line2D.Double line = new Line2D.Double(startingPoint.getX(), startingPoint.getY(),
+                endPoint.getX(), endPoint.getY());
         g.draw(line);
     }
-    
-    private void paintCoordinateList(ArrayList<Coordinate> list, double radius) {
-            for (int i = 0; i < (list.size() - 1); i++) {
-                drawLine(list.get(i), list.get(i + 1));
-            }
-            fillCircle(list.get(list.size() - 1), 0.15);
+
+    protected void drawBoundlingBox() {
+        Rectangle2D.Double rect1;
+        rect1 = new Rectangle2D.Double(-animation.getWidth() / guesswork, -animation.getHeight() / guesswork,
+                2 * animation.getWidth() / guesswork,
+                2 * animation.getHeight() / guesswork); //toMathPaint coords ?!?!?!?!
+        g.draw(rect1);
+    }
+
+    protected void plotCoordinateList(ArrayList<Vector> list, double radius) {
+        for (int i = 0; i < (list.size() - 1); i++) {
+            drawLine(list.get(i), list.get(i + 1));
+        }
+        fillCircle(list.get(list.size() - 1), 0.15);
     }
 
     @Override
     public void mathPaint(Graphics2D g) {
-        int w = animation.getWidth();
-        int h = animation.getHeight();
-        animation.setZero(w / 2, h / 2);
+        this.g = g;
+        animation.setZero(animation.getWidth() / 2, animation.getHeight() / 2);
         animation.setBackground(Color.black);
 
-        //MathPaint coords ?!?!?!?!
-        boundingBox_x = animation.getWidth() / 65.0;
-        boundingBox_y = animation.getHeight() / 65.0;
-
         g.setColor(Color.green);
-        Rectangle2D.Double rect1;
-        rect1 = new Rectangle2D.Double(-boundingBox_x, -boundingBox_y, 2 * boundingBox_x, 2 * boundingBox_y);
-        g.draw(rect1);
-
-        if (dataRunner.size() > 1 && dataChaserBlue.size() > 1 && dataChaserRed.size() > 1) {
-//            g.setColor(Color.white);
-//            for (int i = 0; i < (dataRunner.size() - 1); i++) {
-//                runner_p1 = dataRunner.get(i);
-//                runner_p2 = dataRunner.get(i + 1);
-//
-//                Line2D.Double linie1;
-//                linie1 = new Line2D.Double(runner_p1.getX(), runner_p1.getY(), runner_p2.getX(), runner_p2.getY());
-//                g.draw(linie1);
-//
-//            }
+        drawBoundlingBox();
+        if (dataRunner.size() > 1) {
             g.setColor(Color.white);
-            paintCoordinateList(dataRunner, 0.15);
-
-            g.setColor(Color.blue);
-            for (int i = 0; i < (dataChaserBlue.size() - 1); i++) {
-                chaserBlue_p1 = dataChaserBlue.get(i);
-                chaserRed_p2 = dataChaserBlue.get(i + 1);
-
-                Line2D.Double linie2;
-                linie2 = new Line2D.Double(chaserBlue_p1.getX(), chaserBlue_p1.getY(), chaserRed_p2.getX(), chaserRed_p2.getY());
-                g.draw(linie2);
-
-            }
-            Ellipse2D.Double kreis2;
-            kreis2 = new Ellipse2D.Double(chaserRed_p2.getX() - 0.15, chaserRed_p2.getY() - 0.15, 0.3, 0.3);
-            g.fill(kreis2);
-
-            g.setColor(Color.red);
-            for (int i = 0; i < (dataChaserRed.size() - 1); i++) {
-                chaser2_p1 = dataChaserRed.get(i);
-                chaser2_p2 = dataChaserRed.get(i + 1);
-
-                Line2D.Double linie3;
-                linie3 = new Line2D.Double(chaser2_p1.getX(), chaser2_p1.getY(), chaser2_p2.getX(), chaser2_p2.getY());
-                g.draw(linie3);
-
-            }
-            Ellipse2D.Double kreis3;
-            kreis3 = new Ellipse2D.Double(chaser2_p2.getX() - 0.15, chaser2_p2.getY() - 0.15, 0.3, 0.3);
-            g.fill(kreis3);
+            plotCoordinateList(dataRunner, 0.15);
         }
-
+        if (dataChaserBlue.size() > 1) {
+            g.setColor(Color.blue);
+            plotCoordinateList(dataChaserBlue, 0.15);
+        }
+        if (dataChaserRed.size() > 1) {
+            g.setColor(Color.red);
+            plotCoordinateList(dataChaserRed, 0.15);
+        }
     }
 
     public void init() {
-        setDeltaT(10);
+        stepTime = 10;
         next = false;
         timePassed = 0;
-        boundingBox_x = animation.getWidth() / 65.0;
-        boundingBox_y = animation.getHeight() / 65.0;
+         
+        boundingBox_x = animation.getWidth() / guesswork;
+        boundingBox_y = animation.getHeight() / guesswork;
+        
         //runner
         if (dataRunner.isEmpty()) {
-            r_x = 0;
-            r_y = 0;
+            dataRunner.add(new Vector(0, 0));
         }
         //chaser1
         if (dataChaserBlue.isEmpty()) {
-            c1_x = -3;
-            c1_y = 6;
+            dataChaserBlue.add(new Vector(-3, 6));
         }
         //chaser2
         if (dataChaserRed.isEmpty()) {
-            c2_x = -3;
-            c2_y = -6;
+            dataChaserRed.add(new Vector(-3, -6));
         }
-        //build start pos
-        dataRunner.add(new Coordinate(r_x, r_y));
-        dataChaserBlue.add(new Coordinate(c1_x, c1_y));
-        dataChaserRed.add(new Coordinate(c2_x, c2_y));
     }
 
     public void reset() {
@@ -178,69 +130,53 @@ public class Simulation implements MathPainter, Runnable {
     public void run() {
         while (next) {
             try {
-                Thread.sleep(getDeltaT());
+                Thread.sleep(stepTime);
             } catch (InterruptedException ie) {
                 //tue nichts
             }
-            //v runner
-            rd_x = 0.01;
-            rd_y = 0.01;
-            //runner: next Punkt line
-//            r_x += rd_x;
-//            r_y += rd_y;
-            //runner: next Punkt sin
-            timePassed += stepTime;
-            Coordinate p = dataRunner.get(dataRunner.size() - 1);
-            p.setX(p.getX() + rd_x);
-            p.setY(p.getY() + 3 * rd_x * Math.sin(0.005 * timePassed));
-            // runner: next Punkt circ
-            timePassed += stepTime;
-//            r_x += 2 * rd_x * Math.cos(0.002 * t);
-//            r_y += 2 * rd_x * Math.sin(0.002 * t);
-
-            //v chaser1
-            double direction_x = p.getX() - c1_x;
-            double direction_y = p.getY() - c1_y;
-            double scaleToOne = Math.sqrt(direction_x * direction_x + direction_y * direction_y);
-            direction_x /= scaleToOne;
-            direction_y /= scaleToOne;
-            c1_dx = direction_x * 0.01;
-            c1_dy = direction_y * 0.01;
-
-            //v chaser2
-            direction_x = p.getX() - c2_x;
-            direction_y = p.getY() - c2_y;
-            scaleToOne = Math.sqrt(direction_x * direction_x + direction_y * direction_y);
-            direction_x /= scaleToOne;
-            direction_y /= scaleToOne;
-            c2_dx = direction_x * 0.015;
-            c2_dy = direction_y * 0.015;
-
-            //chaser1: next Punkt
-            c1_x += c1_dx;
-            c1_y += c1_dy;
-            //chaser2: next Punkt
-            c2_x += c2_dx;
-            c2_y += c2_dy;
-
+            //step Lengths
+            double stepLengthRunner = 0.01;
+            double stepLengthChaserBlue = 0.02;
+            double stepLengthChaserRed = 0.021;
+            
+            Vector runnerLastInList = dataRunner.get(dataRunner.size() - 1);
+            Vector chaserBlueLastInList = dataChaserBlue.get(dataChaserBlue.size() - 1);
+            Vector chaserRedLastInList = dataChaserRed.get(dataChaserRed.size() - 1);
+            
             //hit detection
-            double distance_1, distance_2;
-            distance_1 = Math.sqrt(Math.pow(p.getX() - c1_x, 2) + Math.pow(p.getY() - c1_y, 2));
-            distance_2 = Math.sqrt(Math.pow(p.getX() - c2_x, 2) + Math.pow(p.getY() - c2_y, 2));
-            if (distance_1 < 0.1 || distance_2 < 0.1) {
+            if (Vector.length(Vector.subtract(chaserBlueLastInList, runnerLastInList)) <= stepLengthChaserBlue
+                    || Vector.length(Vector.subtract(chaserRedLastInList, runnerLastInList)) <= stepLengthChaserRed) {
                 pcs.firePropertyChange("hit", null, null);
             }
             //out detection
-            if (Math.abs(p.getX()) >= boundingBox_x || Math.abs(p.getY()) >= boundingBox_y) {
+            if (Math.abs(runnerLastInList.getX()) >= boundingBox_x || Math.abs(runnerLastInList.getY()) >= boundingBox_y) {
                 pcs.firePropertyChange("hit", null, null);
             }
+//==============================================================================           
+            //runner: next Punkt line
+//            r_x += rd_x;
+//            r_y += rd_y;
 
+            // runner: next Punkt circ
+//            r_x += 2 * rd_x * Math.cos(0.002 * t);
+//            r_y += 2 * rd_x * Math.sin(0.002 * t);
+
+            //runner: next Punkt sin
+            Vector nextRunner = new Vector(runnerLastInList.getX() + stepLengthRunner, 
+                                           runnerLastInList.getY() + 3 * stepLengthRunner * Math.sin(0.005 * timePassed));
+//==============================================================================           
+            Vector stepChaserBlue = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserBlueLastInList), stepLengthChaserBlue);
+            Vector nextChaserBlue = (Vector.addUp(chaserBlueLastInList, stepChaserBlue));
+            
+            Vector stepChaserRed = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserRedLastInList), stepLengthChaserRed);
+            Vector nextChaserRed = (Vector.addUp(chaserRedLastInList, stepChaserRed));
+            
+            timePassed += stepTime;
             //build arraylist
-            dataRunner.add(new Coordinate(p.getX(), p.getY()));
-            dataChaserBlue.add(new Coordinate(c1_x, c1_y));
-            dataChaserRed.add(new Coordinate(c2_x, c2_y));
+            dataRunner.add(nextRunner);
+            dataChaserBlue.add(nextChaserBlue);
+            dataChaserRed.add(nextChaserRed);
             animation.repaint();
-
         }
         step = null;
     }
@@ -256,19 +192,4 @@ public class Simulation implements MathPainter, Runnable {
     public void stop() {
         next = false;
     }
-
-    /**
-     * @return the deltaT
-     */
-    protected long getDeltaT() {
-        return stepTime;
-    }
-
-    /**
-     * @param deltaT the deltaT to set
-     */
-    protected void setDeltaT(long deltaT) {
-        this.stepTime = deltaT;
-    }
-
 }

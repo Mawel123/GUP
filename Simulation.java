@@ -79,7 +79,7 @@ public class Simulation implements MathPainter, Runnable {
     public void mathPaint(Graphics2D g) {
         this.g = g;
         animation.setZero(animation.getWidth() / 2, animation.getHeight() / 2);
-        animation.setBackground(Color.black);
+        animation.setBackground(Color.gray);
 
         g.setColor(Color.green);
         drawBoundlingBox();
@@ -117,6 +117,7 @@ public class Simulation implements MathPainter, Runnable {
         if (dataChaserRed.isEmpty()) {
             dataChaserRed.add(new Vector(-3, -6));
         }
+        animation.repaint();
     }
 
     public void reset() {

@@ -24,16 +24,16 @@ public class Vector {
         return Math.sqrt(v.x * v.x + v.y * v.y);
     }
 
-    public static Vector scaleToOne(Vector target) {
-        double lengthX = target.x / Math.sqrt(target.x * target.x + target.y * target.y);
-        double lengthY = target.y / Math.sqrt(target.x * target.x + target.y * target.y);
+    public static Vector scaleToOne(Vector v) {
+        double lengthX = v.x / Math.sqrt(v.x * v.x + v.y * v.y);
+        double lengthY = v.y / Math.sqrt(v.x * v.x + v.y * v.y);
 
         return new Vector(lengthX, lengthY);
     }
 
-    public static Vector scaleToLength(Vector target, double scale) {
-        double lengthX = scale * target.x / Math.sqrt(target.x * target.x + target.y * target.y);
-        double lengthY = scale * target.y / Math.sqrt(target.x * target.x + target.y * target.y);
+    public static Vector scaleToLength(Vector v, double scale) {
+        double lengthX = scale * scaleToOne(v).x;
+        double lengthY = scale * scaleToOne(v).y;
 
         return new Vector(lengthX, lengthY);
     }

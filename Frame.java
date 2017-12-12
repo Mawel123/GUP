@@ -1,4 +1,5 @@
 
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -282,7 +283,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
                 simulation.dataRunner.set(0, frameToMath(coordinate));
             }
             eventFlag = "";
-            simulation.fillCircle(coordinate, 0.15);
+            
         }
     }//GEN-LAST:event_animationMouseClicked
 

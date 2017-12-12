@@ -13,7 +13,7 @@ import java.beans.PropertyChangeListener;
  */
 public class Field extends javax.swing.JFrame implements PropertyChangeListener {
 
-    protected Mover mover;
+    protected Simulation simulation;
     protected String flag;
 
     /**
@@ -23,18 +23,18 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
         super();
         initComponents();
 
-        mover = new Mover(anim);
-        anim.setPaintClient(mover);
-        mover.addPropertyChangeListener(this);
+        simulation = new Simulation(animation);
+        animation.setPaintClient(simulation);
+        simulation.addPropertyChangeListener(this);
 
-        anim.repaint();
+        animation.repaint();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         //on hit
         if (evt.getPropertyName().equals("hit")) {
-            mover.stop();
+            simulation.stop();
             button_ON_OFF.setEnabled(false);
             button_RESET.setEnabled(true);
             if (button_ON_OFF.getText().equals("STOP")) {
@@ -53,7 +53,7 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        Frame = new javax.swing.JPanel();
+        Field = new javax.swing.JPanel();
         ui = new javax.swing.JPanel();
         button_RESET = new javax.swing.JButton();
         button_ON_OFF = new javax.swing.JButton();
@@ -71,11 +71,11 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
         numberfield_VEL_z = new JNumberField();
         numberfield_VEL_c1 = new JNumberField();
         numberfield_VEL_c2 = new JNumberField();
-        anim = new JMath();
+        animation = new JMath();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Frame.setLayout(new java.awt.BorderLayout());
+        Field.setLayout(new java.awt.BorderLayout());
 
         java.awt.GridBagLayout uiLayout = new java.awt.GridBagLayout();
         uiLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
@@ -200,16 +200,16 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.gridy = 4;
         ui.add(numberfield_VEL_c2, gridBagConstraints);
 
-        Frame.add(ui, java.awt.BorderLayout.SOUTH);
+        Field.add(ui, java.awt.BorderLayout.SOUTH);
 
-        anim.addMouseListener(new java.awt.event.MouseAdapter() {
+        animation.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                animMouseClicked(evt);
+                animationMouseClicked(evt);
             }
         });
-        Frame.add(anim, java.awt.BorderLayout.CENTER);
+        Field.add(animation, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(Frame, java.awt.BorderLayout.CENTER);
+        getContentPane().add(Field, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -222,25 +222,25 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
 
     public void uiSetNotRunning() {
         button_RESET.setEnabled(true);
-        if (mover.data_runner.isEmpty()) {
-        button_POS_r.setEnabled(true);
-        button_POS_c1.setEnabled(true);
-        button_POS_c2.setEnabled(true);
+        if (simulation.dataRunner.isEmpty()) {
+            button_POS_r.setEnabled(true);
+            button_POS_c1.setEnabled(true);
+            button_POS_c2.setEnabled(true);
         }
     }
 
     private void button_ON_OFFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ON_OFFActionPerformed
-        if (mover.weiter == false) {
+        if (simulation.next == false) {
             if (button_ON_OFF.getText().equals("START")) {
                 button_ON_OFF.setText("STOP");
                 uiSetRunning();
             }
-            if (mover.data_runner.size() < 2) {
-                mover.init();
+            if (simulation.dataRunner.size() < 2) {
+                simulation.init();
             }
-            mover.start();
-        } else if (mover.weiter == true) {
-            mover.stop();
+            simulation.start();
+        } else if (simulation.next == true) {
+            simulation.stop();
             if (button_ON_OFF.getText().equals("STOP")) {
                 button_ON_OFF.setText("START");
                 uiSetNotRunning();
@@ -249,7 +249,7 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
     }//GEN-LAST:event_button_ON_OFFActionPerformed
 
     private void button_RESETActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RESETActionPerformed
-        mover.reset();
+        simulation.reset();
         uiSetNotRunning();
     }//GEN-LAST:event_button_RESETActionPerformed
 
@@ -257,19 +257,19 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
         flag = "pos_r";
     }//GEN-LAST:event_button_POS_rActionPerformed
 
-    private void animMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animMouseClicked
+    private void animationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animationMouseClicked
         if (flag.equals("pos_r")) {
             double x = evt.getX();
             double y = evt.getY();
             //Frame coords to MathPainter coords
-            double mx = (x * ((x - (anim.getWidth() / 2)) / x)) / anim.getUnit();
-            double my = -(y * ((y - (anim.getHeight() / 2)) / y)) / anim.getUnit();
+            double mx = (x * ((x - (animation.getWidth() / 2)) / x)) / animation.getUnit();
+            double my = -(y * ((y - (animation.getHeight() / 2)) / y)) / animation.getUnit();
 
-            mover.data_runner.add(new Punkt(mx, my));
+            simulation.dataRunner.add(new Coordinate(mx, my));
             flag = "";
         }
 
-    }//GEN-LAST:event_animMouseClicked
+    }//GEN-LAST:event_animationMouseClicked
 
     /**
      * @param args the command line arguments
@@ -307,8 +307,8 @@ public class Field extends javax.swing.JFrame implements PropertyChangeListener 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel Frame;
-    private JMath anim;
+    private javax.swing.JPanel Field;
+    private JMath animation;
     private javax.swing.JButton button_ON_OFF;
     private javax.swing.JButton button_POS_c1;
     private javax.swing.JButton button_POS_c2;

@@ -75,7 +75,11 @@ public class Simulation implements MathPainter, Runnable {
                 endPoint.getX(), endPoint.getY());
         g.draw(line);
     }
-
+    
+    protected void drawLine(Line2D.Double line) {
+        g.draw(line);
+    }
+    
     protected void drawBoundlingBox() {
         Rectangle2D.Double rect1;
         rect1 = new Rectangle2D.Double(-animation.getWidth() / guesswork, -animation.getHeight() / guesswork,

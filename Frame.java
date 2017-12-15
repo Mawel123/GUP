@@ -1,6 +1,6 @@
 
-import java.awt.Color;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -711,7 +711,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         animation.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                setStartingPosition(evt);
+                setStartingPosition(evt);               
             }
         });
     }
@@ -720,6 +720,18 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Vector coordinate = new Vector(evt.getX(), evt.getY());
         if (eventFlag.equals("pos_r")) {
             addVectorToList(simulation.dataRunner, coordinate);
+            Line2D.Double line  = new Line2D.Double(evt.getX(), evt.getY(),evt.getX(), evt.getY());
+            if (comboBoxForm.getSelectedItem().toString().equals("Gerade")) {
+                    animation.addMouseListener(new java.awt.event.MouseAdapter() {
+                        @Override
+                        public void mouseMoved(MouseEvent e){
+                            line.x2 = e.getX();
+                            line.y2 = e.getY();
+                            simulation.drawLine(line);
+                            animation.repaint();
+                        }
+                    });
+                }
         } else if (eventFlag.equals("pos_cb")) {
             addVectorToList(simulation.dataChaserBlue, coordinate);
         } else if (eventFlag.equals("pos_cr")) {

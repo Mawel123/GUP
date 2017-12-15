@@ -41,8 +41,12 @@ public class Simulation implements MathPainter, Runnable {
 
     public boolean chaserBlueEnabled = true;
     public boolean chaserRedEnabled = true;
+    public boolean paintRunnerDirection = false;
     public String runnerMode = "Gerade";
     public Vector runnerDirection;
+    public Line2D.Double runnerDirectionLine;
+    
+    
 
     public Simulation(JMath anim) {
         this.animation = anim;
@@ -100,6 +104,11 @@ public class Simulation implements MathPainter, Runnable {
         this.g = g;
         animation.setZero(animation.getWidth() / 2, animation.getHeight() / 2);
         animation.setBackground(Color.gray);
+        
+        if(paintRunnerDirection) {
+            g.setColor(Color.cyan);
+            drawLine(runnerDirectionLine);
+        }
 
         g.setColor(Color.green);
         drawBoundlingBox();
@@ -174,7 +183,6 @@ public class Simulation implements MathPainter, Runnable {
         dataChaserRed.clear();
 
         animation.repaint();
-
     }
 
     @Override

@@ -1,9 +1,12 @@
 
+import java.awt.List;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Line2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -32,11 +35,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelRunner.setText(String.format("%6.2f", simulation.stepLengthRunner * 100));
         numberfieldVelChaserBlue.setText(String.format("%6.2f", simulation.stepLengthChaserBlue * 100));
         numberfieldVelChaserRed.setText(String.format("%6.2f", simulation.stepLengthChaserRed * 100));
-        
+
         sliderVelRunner.setValue(10);
         sliderVelChaserBlue.setValue(10);
         sliderVelChaserRed.setValue(10);
-        
+
         numberfieldScale.setText(String.format("%6.2f", simulation.animationScale));
         animation.repaint();
         simulation.init();
@@ -711,7 +714,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         animation.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                setStartingPosition(evt);               
+                setStartingPosition(evt);
             }
         });
     }
@@ -720,18 +723,24 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Vector coordinate = new Vector(evt.getX(), evt.getY());
         if (eventFlag.equals("pos_r")) {
             addVectorToList(simulation.dataRunner, coordinate);
-            Line2D.Double line  = new Line2D.Double(evt.getX(), evt.getY(),evt.getX(), evt.getY());
+            Vector trashV1 = frameToMath(coordinate);
+
+//            simulation.runnerDirectionLine  = new Line2D.Double(trashV1.getX(), trashV1.getY(),trashV1.getX(), trashV1.getY());
+            simulation.runnerDirectionLine = new Line2D.Double(-4, -2, 4, 2);
             if (comboBoxForm.getSelectedItem().toString().equals("Gerade")) {
-                    animation.addMouseListener(new java.awt.event.MouseAdapter() {
-                        @Override
-                        public void mouseMoved(MouseEvent e){
-                            line.x2 = e.getX();
-                            line.y2 = e.getY();
-                            simulation.drawLine(line);
-                            animation.repaint();
-                        }
-                    });
-                }
+                simulation.paintRunnerDirection = true;
+                MouseListener[] mouseListeners = animation.getMouseListeners();
+                Arrays.asList(animation.getMouseListeners()).removeIf(i -> true);
+                animation.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                        Vector trashV2 = frameToMath(new Vector(e.getX(), e.getY()));
+                        simulation.runnerDirectionLine.x2 = trashV2.getX();
+                        simulation.runnerDirectionLine.y2 = trashV2.getY();
+                        animation.repaint();
+                    }
+                });
+            }
         } else if (eventFlag.equals("pos_cb")) {
             addVectorToList(simulation.dataChaserBlue, coordinate);
         } else if (eventFlag.equals("pos_cr")) {

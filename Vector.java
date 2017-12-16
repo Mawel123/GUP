@@ -51,6 +51,16 @@ public class Vector {
 
         return new Vector(vx, vy);
     }
+    
+    public static Vector rotateByDegree(Vector v, double alpha) {
+        Double rx, ry;
+        
+        rx = v.x * Math.cos(alpha) - v.y * Math.sin(alpha);
+        ry = v.x * Math.sin(alpha) + v.y * Math.cos(alpha);
+        
+        return new Vector(rx, ry);
+        
+    }
 
     /**
      * @return the x

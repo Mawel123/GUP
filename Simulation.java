@@ -1,6 +1,7 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -25,15 +26,19 @@ public class Simulation implements MathPainter, Runnable {
     private long timePassed;
     private long stepTime;
     public PropertyChangeSupport pcs;
+    private Double alpha;
+    public boolean mouseControlEnabled = false;
+    public double animationScale = 1;
 
     public double stepLengthRunner = 0.01;
     public double stepLengthChaserBlue = 0.01;
     public double stepLengthChaserRed = 0.01;
+    public double stepLengthRiver = 0.0075 * animationScale;
+    public double radius = 0.15;
 
     Graphics2D g;
-    final double guesswork = 65.0;
-    private double boundingBox_x, boundingBox_y;
-    public double animationScale = 1;
+    final double guesswork = 65.0; //Faulheit
+    protected double boundingBox_x, boundingBox_y;
 
     ArrayList<Vector> dataRunner = new ArrayList<>();
     ArrayList<Vector> dataChaserBlue = new ArrayList<>();
@@ -42,11 +47,11 @@ public class Simulation implements MathPainter, Runnable {
     public boolean chaserBlueEnabled = true;
     public boolean chaserRedEnabled = true;
     public boolean paintRunnerDirection = false;
+    public boolean paintRunnerDirectionDone = true;
+    public boolean riverEnabled = true;
     public String runnerMode = "Gerade";
     public Vector runnerDirection;
-    public Line2D.Double runnerDirectionLine;
-    
-    
+    public Line2D.Double runnerDirectionLine = new Line2D.Double();
 
     public Simulation(JMath anim) {
         this.animation = anim;
@@ -79,11 +84,16 @@ public class Simulation implements MathPainter, Runnable {
                 endPoint.getX(), endPoint.getY());
         g.draw(line);
     }
-    
+
     protected void drawLine(Line2D.Double line) {
         g.draw(line);
     }
-    
+
+    protected void drawRectangle(double x1, double y1, double x2, double y2) {
+        Rectangle2D.Double rectangle = new Rectangle2D.Double(x1, y1, x2, y2);
+        g.draw(rectangle);
+    }
+
     protected void drawBoundlingBox() {
         Rectangle2D.Double rect1;
         rect1 = new Rectangle2D.Double(-animation.getWidth() / guesswork, -animation.getHeight() / guesswork,
@@ -96,54 +106,70 @@ public class Simulation implements MathPainter, Runnable {
         for (int i = 0; i < (list.size() - 1); i++) {
             drawLine(list.get(i), list.get(i + 1));
         }
-        fillCircle(list.get(list.size() - 1), 0.15);
+        fillCircle(list.get(list.size() - 1), radius);
+    }
+
+    private void paintRiver() {
+        g.setColor(Color.cyan);
+        drawRectangle(-boundingBox_x, -boundingBox_y + 0.3 * boundingBox_y, 2 * boundingBox_x, boundingBox_y - 0.6 * boundingBox_y);
     }
 
     @Override
     public void mathPaint(Graphics2D g) {
         this.g = g;
         animation.setZero(animation.getWidth() / 2, animation.getHeight() / 2);
-        animation.setBackground(Color.gray);
-        
-        if(paintRunnerDirection) {
-            g.setColor(Color.cyan);
+        animation.setBackground(Color.black);
+
+        if (mouseControlEnabled && paintRunnerDirection && (runnerMode.equals("Gerade") || runnerMode.equals("Sinus"))) {
+            g.setColor(Color.lightGray);
+            drawLine(runnerDirectionLine);
+        }
+
+        if (paintRunnerDirectionDone && (runnerMode.equals("Gerade") || runnerMode.equals("Sinus"))) {
+            g.setColor(Color.lightGray);
             drawLine(runnerDirectionLine);
         }
 
         g.setColor(Color.green);
         drawBoundlingBox();
+
+        if (riverEnabled) {
+            paintRiver();
+        }
+
         if (dataRunner.size() > 1) {
             g.setColor(Color.white);
-            plotCoordinateList(dataRunner, 0.15);
+            plotCoordinateList(dataRunner, radius);
         } else if (dataRunner.size() == 1) {
             g.setColor(Color.white);
-            fillCircle(dataRunner.get(0), 0.15);
+            fillCircle(dataRunner.get(0), radius);
         }
         if (chaserBlueEnabled) {
             if (dataChaserBlue.size() > 1) {
                 g.setColor(Color.blue);
-                plotCoordinateList(dataChaserBlue, 0.15);
+                plotCoordinateList(dataChaserBlue, radius);
             } else if (dataChaserBlue.size() == 1) {
                 g.setColor(Color.blue);
-                fillCircle(dataChaserBlue.get(0), 0.15);
+                fillCircle(dataChaserBlue.get(0), radius);
             }
         } else if (!dataChaserBlue.isEmpty()) {
             g.setColor(Color.blue);
-            drawCircle(dataChaserBlue.get(dataChaserBlue.size() - 1), 0.15);
+            drawCircle(dataChaserBlue.get(dataChaserBlue.size() - 1), radius);
         }
 
         if (chaserRedEnabled) {
             if (dataChaserRed.size() > 1) {
                 g.setColor(Color.red);
-                plotCoordinateList(dataChaserRed, 0.15);
+                plotCoordinateList(dataChaserRed, radius);
             } else if (dataChaserRed.size() == 1) {
                 g.setColor(Color.red);
-                fillCircle(dataChaserRed.get(0), 0.15);
+                fillCircle(dataChaserRed.get(0), radius);
             }
         } else if (!dataChaserRed.isEmpty()) {
             g.setColor(Color.red);
-            drawCircle(dataChaserRed.get(dataChaserRed.size() - 1), 0.15);
+            drawCircle(dataChaserRed.get(dataChaserRed.size() - 1), radius);
         }
+        Toolkit.getDefaultToolkit().sync();
     }
 
     protected void fireCoordinateChange() {
@@ -158,12 +184,18 @@ public class Simulation implements MathPainter, Runnable {
         timePassed = 0;
         runnerDirection = new Vector(1, 0);
 
+        if (dataRunner.isEmpty()) {
+            runnerDirectionLine.setLine(-animationScale * Math.PI, 0, 100, 0);
+        }
+
         boundingBox_x = animation.getWidth() / guesswork;
         boundingBox_y = animation.getHeight() / guesswork;
 
         //runner
         if (dataRunner.isEmpty()) {
             dataRunner.add(new Vector(-animationScale * Math.PI, 0));
+            runnerDirectionLine.setLine(-animationScale * Math.PI, 0, 100, 0);
+            alpha = 0.0;
         }
         //chaser1
         if (dataChaserBlue.isEmpty()) {
@@ -182,7 +214,17 @@ public class Simulation implements MathPainter, Runnable {
         dataChaserBlue.clear();
         dataChaserRed.clear();
 
+        stepLengthRunner = 0.01;
+
         animation.repaint();
+    }
+
+    private Vector applyRiverCurrent(Vector last, Vector next) {
+        if (last.y >= -boundingBox_y + 0.3 * boundingBox_y
+                && last.y <= -boundingBox_y + 0.3 * boundingBox_y + boundingBox_y - 0.6 * boundingBox_y) {
+            next = Vector.addUp(next, new Vector(stepLengthRiver, 0.0));
+        }
+        return next;
     }
 
     @Override
@@ -216,16 +258,26 @@ public class Simulation implements MathPainter, Runnable {
             double scale = 0.00025 * stepLengthRunner * 100 * (1 / animationScale);
             double amplitude = 0.01 * stepLengthRunner * 100 * Math.PI;
 
+            alpha = Math.atan2(runnerDirectionLine.y2 - runnerDirectionLine.y1, runnerDirectionLine.x2 - runnerDirectionLine.x1);
             //line
             if (runnerMode.equals("Gerade")) {
                 stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
-                nextRunner = Vector.addUp(runnerLastInList, Vector.scaleToLength(stepRunner, stepLengthRunner));
+                nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByDegree(Vector.scaleToLength(stepRunner, stepLengthRunner), alpha));
+                if (riverEnabled) {
+                    nextRunner = applyRiverCurrent(runnerLastInList, nextRunner);
+                }
                 //sine
             } else if (runnerMode.equals("Sinus")) {
                 nextTrigonY = amplitude * (Math.cos((2 * Math.PI * scale) * timePassed));
                 runnerDirection = new Vector(stepLengthRunner, nextTrigonY);
                 stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
-                nextRunner = Vector.addUp(runnerLastInList, Vector.scaleToLength(stepRunner, stepLengthRunner));
+                nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByDegree(Vector.scaleToLength(stepRunner, stepLengthRunner), alpha));
+                if (runnerLastInList.y >= -3.1 && runnerLastInList.y <= -1.3) {
+                    nextRunner = Vector.addUp(nextRunner, new Vector(stepLengthRiver, 0.0));
+                }
+                if (riverEnabled) {
+                    nextRunner = applyRiverCurrent(runnerLastInList, nextRunner);
+                }
                 //circle
             } else if (runnerMode.equals("Kreis")) {
                 nextTrigonX = amplitude * (Math.sin((2 * Math.PI * scale / 5) * timePassed));
@@ -233,6 +285,9 @@ public class Simulation implements MathPainter, Runnable {
                 runnerDirection = new Vector(nextTrigonX, nextTrigonY);
                 stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
                 nextRunner = Vector.addUp(runnerLastInList, Vector.scaleToLength(stepRunner, stepLengthRunner));
+                if (riverEnabled) {
+                    nextRunner = applyRiverCurrent(runnerLastInList, nextRunner);
+                }
             } else {
                 nextRunner = runnerLastInList;
             }
@@ -246,6 +301,9 @@ public class Simulation implements MathPainter, Runnable {
             } else {
                 nextChaserBlue = chaserBlueLastInList;
             }
+            if (riverEnabled) {
+                nextChaserBlue = applyRiverCurrent(chaserBlueLastInList, nextChaserBlue);
+            }
             //calculating next chaserRed point
             Vector nextChaserRed;
             Vector stepChaserRed = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserRedLastInList), stepLengthChaserRed);
@@ -254,7 +312,11 @@ public class Simulation implements MathPainter, Runnable {
             } else {
                 nextChaserRed = chaserRedLastInList;
             }
+            if (riverEnabled) {
+                nextChaserRed = applyRiverCurrent(chaserRedLastInList, nextChaserRed);
+            }
 
+            //River
             //building arraylists
             dataRunner.add(nextRunner);
             dataChaserBlue.add(nextChaserBlue);

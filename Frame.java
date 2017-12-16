@@ -1,12 +1,8 @@
 
-import java.awt.List;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Line2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -20,7 +16,7 @@ import java.util.Arrays;
 public class Frame extends javax.swing.JFrame implements PropertyChangeListener {
 
     protected Simulation simulation;
-    protected String eventFlag = "";
+    protected String eventFlagPosition = "";
 
     /**
      * Creates new form Field
@@ -40,7 +36,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelChaserBlue.setValue(10);
         sliderVelChaserRed.setValue(10);
 
-        numberfieldScale.setText(String.format("%6.2f", simulation.animationScale));
+        numberfieldAnimationScale.setText(String.format("%6.2f", simulation.animationScale));
         animation.repaint();
         simulation.init();
     }
@@ -52,7 +48,12 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             simulation.stop();
             buttonOnOff.setEnabled(false);
             buttonReset.setEnabled(true);
-            if (buttonOnOff.getText().equals("STOP")) {
+            simulation.mouseControlEnabled = false;
+            simulation.paintRunnerDirection = false;
+            simulation.paintRunnerDirectionDone = false;
+            animation.repaint();
+            if (buttonOnOff.getText()
+                    .equals("STOP")) {
                 buttonOnOff.setText("START");
             }
         }
@@ -60,8 +61,8 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Vector v;
         if (evt.getPropertyName().equals("nextRunner")) {
             v = (Vector) evt.getNewValue();
-            numberfieldPosRunnerX.setText("" + String.format("%6.2f", v.x));
             numberfieldPosRunnerY.setText("" + String.format("%6.2f", v.y));
+            numberfieldPosRunnerX.setText("" + String.format("%6.2f", v.x));
         }
 
         if (evt.getPropertyName().equals("nextChaserBlue")) {
@@ -94,11 +95,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         buttonOnOff = new javax.swing.JButton();
         checkboxChaserBlue = new javax.swing.JCheckBox();
         checkboxChaserRed = new javax.swing.JCheckBox();
-        buttonPosRnner = new javax.swing.JButton();
+        buttonPosRunner = new javax.swing.JButton();
         buttonPosChaserBlue = new javax.swing.JButton();
         buttonPosChaserRed = new javax.swing.JButton();
-        numberfieldPosRunnerX = new JNumberField();
         numberfieldPosRunnerY = new JNumberField();
+        numberfieldPosRunnerX = new JNumberField();
         numberfieldPosChaserBlueX = new JNumberField();
         numberfieldPosChaserBlueY = new JNumberField();
         numberfieldPosChaserRedX = new JNumberField();
@@ -108,7 +109,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelChaserBlue = new JNumberField();
         numberfieldVelChaserRed = new JNumberField();
         comboBoxForm = new javax.swing.JComboBox<>();
-        numberfieldScale = new JNumberField();
+        numberfieldAnimationScale = new JNumberField();
         jLabel4 = new javax.swing.JLabel();
         sliderVelRunner = new javax.swing.JSlider();
         sliderVelChaserBlue = new javax.swing.JSlider();
@@ -116,13 +117,30 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         jLabel5 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jSlider1 = new javax.swing.JSlider();
+        sliderAnimationScale = new javax.swing.JSlider();
+        checkboxMouseControl = new javax.swing.JCheckBox();
+        checkboxRiver = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Field.setLayout(new java.awt.BorderLayout());
 
         animation.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        animation.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                animationMouseMoved(evt);
+            }
+        });
+        animation.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                animationMouseClicked(evt);
+            }
+        });
+        animation.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                animationComponentResized(evt);
+            }
+        });
         Field.add(animation, java.awt.BorderLayout.CENTER);
 
         ui.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -183,12 +201,12 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.gridy = 5;
         ui.add(checkboxChaserRed, gridBagConstraints);
 
-        buttonPosRnner.setText("Ziel");
-        buttonPosRnner.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Position", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
-        buttonPosRnner.setIconTextGap(0);
-        buttonPosRnner.addActionListener(new java.awt.event.ActionListener() {
+        buttonPosRunner.setText("Ziel");
+        buttonPosRunner.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Position", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosRunner.setIconTextGap(0);
+        buttonPosRunner.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPosRnnerActionPerformed(evt);
+                buttonPosRunnerActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -197,7 +215,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 30;
         gridBagConstraints.ipady = 5;
-        ui.add(buttonPosRnner, gridBagConstraints);
+        ui.add(buttonPosRunner, gridBagConstraints);
 
         buttonPosChaserBlue.setText("Verfolger Blau");
         buttonPosChaserBlue.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Position", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -229,27 +247,27 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.ipady = 5;
         ui.add(buttonPosChaserRed, gridBagConstraints);
 
-        numberfieldPosRunnerX.setEditable(false);
-        numberfieldPosRunnerX.setColumns(4);
-        numberfieldPosRunnerX.setFocusable(false);
+        numberfieldPosRunnerY.setEditable(false);
+        numberfieldPosRunnerY.setColumns(4);
+        numberfieldPosRunnerY.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
-        ui.add(numberfieldPosRunnerX, gridBagConstraints);
+        ui.add(numberfieldPosRunnerY, gridBagConstraints);
 
-        numberfieldPosRunnerY.setEditable(false);
-        numberfieldPosRunnerY.setColumns(4);
-        numberfieldPosRunnerY.setFocusable(false);
+        numberfieldPosRunnerX.setEditable(false);
+        numberfieldPosRunnerX.setColumns(4);
+        numberfieldPosRunnerX.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
-        ui.add(numberfieldPosRunnerY, gridBagConstraints);
+        ui.add(numberfieldPosRunnerX, gridBagConstraints);
 
         numberfieldPosChaserBlueX.setEditable(false);
         numberfieldPosChaserBlueX.setColumns(4);
@@ -306,16 +324,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelRunner.setEditable(false);
         numberfieldVelRunner.setColumns(4);
         numberfieldVelRunner.setFocusable(false);
-        numberfieldVelRunner.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                numberfieldVelRunnerFocusLost(evt);
-            }
-        });
-        numberfieldVelRunner.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numberfieldVelRunnerActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 18;
         gridBagConstraints.gridy = 1;
@@ -327,16 +335,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelChaserBlue.setEditable(false);
         numberfieldVelChaserBlue.setColumns(4);
         numberfieldVelChaserBlue.setFocusable(false);
-        numberfieldVelChaserBlue.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                numberfieldVelChaserBlueFocusLost(evt);
-            }
-        });
-        numberfieldVelChaserBlue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numberfieldVelChaserBlueActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 18;
         gridBagConstraints.gridy = 3;
@@ -348,16 +346,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelChaserRed.setEditable(false);
         numberfieldVelChaserRed.setColumns(4);
         numberfieldVelChaserRed.setFocusable(false);
-        numberfieldVelChaserRed.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                numberfieldVelChaserRedFocusLost(evt);
-            }
-        });
-        numberfieldVelChaserRed.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numberfieldVelChaserRedActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 18;
         gridBagConstraints.gridy = 5;
@@ -379,23 +367,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         ui.add(comboBoxForm, gridBagConstraints);
 
-        numberfieldScale.setColumns(4);
-        numberfieldScale.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                numberfieldScaleFocusLost(evt);
-            }
-        });
-        numberfieldScale.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numberfieldScaleActionPerformed(evt);
-            }
-        });
+        numberfieldAnimationScale.setColumns(4);
+        numberfieldAnimationScale.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        ui.add(numberfieldScale, gridBagConstraints);
+        ui.add(numberfieldAnimationScale, gridBagConstraints);
 
         jLabel4.setText("Maßstab:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -406,7 +385,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(jLabel4, gridBagConstraints);
 
         sliderVelRunner.setMajorTickSpacing(10);
-        sliderVelRunner.setMinorTickSpacing(1);
+        sliderVelRunner.setMinorTickSpacing(2);
         sliderVelRunner.setPaintTicks(true);
         sliderVelRunner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -421,7 +400,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(sliderVelRunner, gridBagConstraints);
 
         sliderVelChaserBlue.setMajorTickSpacing(10);
-        sliderVelChaserBlue.setMinorTickSpacing(1);
+        sliderVelChaserBlue.setMinorTickSpacing(2);
         sliderVelChaserBlue.setPaintTicks(true);
         sliderVelChaserBlue.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -436,7 +415,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(sliderVelChaserBlue, gridBagConstraints);
 
         sliderVelChaserRed.setMajorTickSpacing(10);
-        sliderVelChaserRed.setMinorTickSpacing(1);
+        sliderVelChaserRed.setMinorTickSpacing(2);
         sliderVelChaserRed.setPaintTicks(true);
         sliderVelChaserRed.setToolTipText("");
         sliderVelChaserRed.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -475,17 +454,48 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         ui.add(jSeparator1, gridBagConstraints);
 
-        jSlider1.setMajorTickSpacing(10);
-        jSlider1.setMaximum(50);
-        jSlider1.setMinimum(1);
-        jSlider1.setMinorTickSpacing(1);
-        jSlider1.setPaintTicks(true);
+        sliderAnimationScale.setMajorTickSpacing(10);
+        sliderAnimationScale.setMaximum(50);
+        sliderAnimationScale.setMinimum(10);
+        sliderAnimationScale.setMinorTickSpacing(1);
+        sliderAnimationScale.setPaintTicks(true);
+        sliderAnimationScale.setValue(10);
+        sliderAnimationScale.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderAnimationScaleStateChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        ui.add(jSlider1, gridBagConstraints);
+        ui.add(sliderAnimationScale, gridBagConstraints);
+
+        checkboxMouseControl.setText("Maussteuerung");
+        checkboxMouseControl.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                checkboxMouseControlItemStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        ui.add(checkboxMouseControl, gridBagConstraints);
+
+        checkboxRiver.setSelected(true);
+        checkboxRiver.setText("Fluss");
+        checkboxRiver.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                checkboxRiverItemStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 18;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        ui.add(checkboxRiver, gridBagConstraints);
 
         Field.add(ui, java.awt.BorderLayout.SOUTH);
 
@@ -495,25 +505,27 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     }// </editor-fold>//GEN-END:initComponents
     public void uiSetRunning() {
         buttonReset.setEnabled(false);
-        buttonPosRnner.setEnabled(false);
+        buttonPosRunner.setEnabled(false);
         buttonPosChaserBlue.setEnabled(false);
         buttonPosChaserRed.setEnabled(false);
         comboBoxForm.setEnabled(false);
         sliderVelRunner.setEnabled(false);
         sliderVelChaserBlue.setEnabled(false);
         sliderVelChaserRed.setEnabled(false);
-        numberfieldScale.setEnabled(false);
+        numberfieldAnimationScale.setEnabled(false);
+        checkboxMouseControl.setEnabled(false);
+        sliderAnimationScale.setEnabled(false);
     }
 
     public void uiSetNotRunning() {
         if (simulation.dataRunner.size() < 2) {
             buttonReset.setEnabled(false);
-            buttonPosRnner.setEnabled(true);
+            buttonPosRunner.setEnabled(true);
             comboBoxForm.setEnabled(true);
             sliderVelRunner.setEnabled(true);
             sliderVelChaserBlue.setEnabled(true);
             sliderVelChaserRed.setEnabled(true);
-            numberfieldScale.setEnabled(true);
+            sliderAnimationScale.setEnabled(true);
             if (checkboxChaserBlue.isSelected()) {
                 buttonPosChaserBlue.setEnabled(true);
             } else {
@@ -529,19 +541,21 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             sliderVelRunner.setEnabled(true);
             sliderVelChaserBlue.setEnabled(true);
             sliderVelChaserRed.setEnabled(true);
-            numberfieldScale.setEnabled(false);
+            sliderAnimationScale.setEnabled(true);
+            sliderAnimationScale.setEnabled(false);
         } else {
             buttonReset.setEnabled(true);
-            buttonPosRnner.setEnabled(false);
+            buttonPosRunner.setEnabled(false);
             buttonPosChaserBlue.setEnabled(false);
             buttonPosChaserRed.setEnabled(false);
             comboBoxForm.setEnabled(false);
             sliderVelRunner.setEnabled(false);
             sliderVelChaserBlue.setEnabled(false);
             sliderVelChaserRed.setEnabled(false);
-            numberfieldScale.setEnabled(false);
+            sliderAnimationScale.setEnabled(false);
         }
         buttonOnOff.setEnabled(true);
+        checkboxMouseControl.setEnabled(true);
     }
 
     protected Vector frameToMath(Vector coordinates) {
@@ -570,31 +584,37 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
                 uiSetNotRunning();
             }
         }
+        if (simulation.paintRunnerDirection && !simulation.mouseControlEnabled) {
+            simulation.paintRunnerDirection = false;
+            simulation.paintRunnerDirectionDone = true;
+        }
+        checkboxMouseControl.setEnabled(false);
     }//GEN-LAST:event_buttonOnOffActionPerformed
 
     private void buttonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonResetActionPerformed
         simulation.reset();
         simulation.init();
+        comboBoxForm.setSelectedItem("Gerade");
+        checkboxMouseControl.setSelected(false);
+        uiSetNotRunning();
+        buttonReset.setEnabled(false);
+
+        numberfieldVelRunner.setText(String.format("%6.2f", (sliderVelRunner.getValue() * 0.1)));
         sliderVelRunner.setValue(10);
         sliderVelChaserBlue.setValue(10);
         sliderVelChaserRed.setValue(10);
-        uiSetNotRunning();
-        buttonReset.setEnabled(false);
     }//GEN-LAST:event_buttonResetActionPerformed
 
-    private void buttonPosRnnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosRnnerActionPerformed
-        eventFlag = "pos_r";
-        createMouseListener();
-    }//GEN-LAST:event_buttonPosRnnerActionPerformed
+    private void buttonPosRunnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosRunnerActionPerformed
+        eventFlagPosition = "pos_r";
+    }//GEN-LAST:event_buttonPosRunnerActionPerformed
 
     private void buttonPosChaserBlueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosChaserBlueActionPerformed
-        eventFlag = "pos_cb";
-        createMouseListener();
+        eventFlagPosition = "pos_cb";
     }//GEN-LAST:event_buttonPosChaserBlueActionPerformed
 
     private void buttonPosChaserRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosChaserRedActionPerformed
-        eventFlag = "pos_cr";
-        createMouseListener();
+        eventFlagPosition = "pos_cr";
     }//GEN-LAST:event_buttonPosChaserRedActionPerformed
 
     private void checkboxChaserBlueItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxChaserBlueItemStateChanged
@@ -629,68 +649,13 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
     private void comboBoxFormItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboBoxFormItemStateChanged
         simulation.runnerMode = comboBoxForm.getSelectedItem().toString();
+        if (comboBoxForm.getSelectedItem().equals("Gerade") && checkboxMouseControl.isSelected()) {
+            sliderVelRunner.setEnabled(false);
+        } else {
+            sliderVelRunner.setEnabled(true);
+        }
+        animation.repaint();
     }//GEN-LAST:event_comboBoxFormItemStateChanged
-
-    private void numberfieldVelRunnerFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numberfieldVelRunnerFocusLost
-        if (Math.abs(Double.parseDouble(numberfieldVelRunner.getText())) < 1E-7) {
-            numberfieldVelRunner.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.stepLengthRunner = Double.parseDouble(numberfieldVelRunner.getText()) * 0.01;
-    }//GEN-LAST:event_numberfieldVelRunnerFocusLost
-
-    private void numberfieldVelRunnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberfieldVelRunnerActionPerformed
-        if (Math.abs(Double.parseDouble(numberfieldVelRunner.getText())) < 1E-7) {
-            numberfieldVelRunner.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.stepLengthRunner = Double.parseDouble(numberfieldVelRunner.getText()) * 0.01;
-    }//GEN-LAST:event_numberfieldVelRunnerActionPerformed
-
-    private void numberfieldVelChaserBlueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numberfieldVelChaserBlueFocusLost
-        if (Math.abs(Double.parseDouble(numberfieldVelChaserBlue.getText())) < 1E-7) {
-            numberfieldVelChaserBlue.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.stepLengthChaserBlue = Double.parseDouble(numberfieldVelChaserBlue.getText()) * 0.01;
-    }//GEN-LAST:event_numberfieldVelChaserBlueFocusLost
-
-    private void numberfieldVelChaserBlueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberfieldVelChaserBlueActionPerformed
-        if (Math.abs(Double.parseDouble(numberfieldVelChaserBlue.getText())) < 1E-7) {
-            numberfieldVelChaserBlue.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.stepLengthChaserBlue = Double.parseDouble(numberfieldVelChaserBlue.getText()) * 0.01;
-    }//GEN-LAST:event_numberfieldVelChaserBlueActionPerformed
-
-    private void numberfieldVelChaserRedFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numberfieldVelChaserRedFocusLost
-        if (Math.abs(Double.parseDouble(numberfieldVelChaserRed.getText())) < 1E-7) {
-            numberfieldVelChaserRed.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.stepLengthChaserRed = Double.parseDouble(numberfieldVelChaserRed.getText()) * 0.01;
-    }//GEN-LAST:event_numberfieldVelChaserRedFocusLost
-
-    private void numberfieldVelChaserRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberfieldVelChaserRedActionPerformed
-        if (Math.abs(Double.parseDouble(numberfieldVelChaserRed.getText())) < 1E-7) {
-            numberfieldVelChaserRed.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.stepLengthChaserRed = Double.parseDouble(numberfieldVelChaserRed.getText()) * 0.01;
-    }//GEN-LAST:event_numberfieldVelChaserRedActionPerformed
-
-    private void numberfieldScaleFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numberfieldScaleFocusLost
-        if (Math.abs(Double.parseDouble(numberfieldScale.getText())) < 1E-7) {
-            numberfieldScale.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.animationScale = Double.parseDouble(numberfieldScale.getText());
-        simulation.init();
-        buttonReset.setEnabled(true);
-    }//GEN-LAST:event_numberfieldScaleFocusLost
-
-    private void numberfieldScaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberfieldScaleActionPerformed
-        if (Math.abs(Double.parseDouble(numberfieldScale.getText())) < 1E-7) {
-            numberfieldScale.setText(String.format("%6.2f", 0.01));
-        }
-        simulation.animationScale = Double.parseDouble(numberfieldScale.getText());
-        simulation.init();
-        buttonReset.setEnabled(true);
-
-    }//GEN-LAST:event_numberfieldScaleActionPerformed
 
     private void sliderVelChaserRedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVelChaserRedStateChanged
         simulation.stepLengthChaserRed = sliderVelChaserRed.getValue() * 0.1 * 0.01;
@@ -710,47 +675,116 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelRunnerStateChanged
 
-    private void createMouseListener() {
-        animation.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                setStartingPosition(evt);
+    private void animationMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animationMouseMoved
+        if (simulation.paintRunnerDirection) {
+            setStartingDirection(evt);
+        }
+    }//GEN-LAST:event_animationMouseMoved
+
+    private void animationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animationMouseClicked
+        if (simulation.paintRunnerDirection && !simulation.mouseControlEnabled) {
+            simulation.paintRunnerDirection = false;
+            simulation.paintRunnerDirectionDone = true;
+        }
+        setStartingPosition(evt);
+    }//GEN-LAST:event_animationMouseClicked
+
+    private void animationComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_animationComponentResized
+        simulation.init();
+        animation.repaint();
+    }//GEN-LAST:event_animationComponentResized
+
+    private void checkboxMouseControlItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxMouseControlItemStateChanged
+        if (checkboxMouseControl.isSelected()) {
+            simulation.mouseControlEnabled = true;
+            simulation.paintRunnerDirection = true;
+            if (!comboBoxForm.getSelectedItem().toString().equals("Gerade")) {
+                sliderVelRunner.setEnabled(true);
+            } else {
+                sliderVelRunner.setEnabled(false);
             }
-        });
+        } else {
+            sliderVelRunner.setEnabled(true);
+            simulation.mouseControlEnabled = false;
+            simulation.paintRunnerDirection = false;
+            animation.repaint();
+        }
+    }//GEN-LAST:event_checkboxMouseControlItemStateChanged
+
+    private void sliderAnimationScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderAnimationScaleStateChanged
+        simulation.animationScale = sliderAnimationScale.getValue() * 0.1;
+        simulation.radius = sliderAnimationScale.getValue() * 0.1 * 0.025 + 0.1475;
+        numberfieldAnimationScale.setText(String.format("%6.2f", sliderAnimationScale.getValue() * 0.1));
+        simulation.reset();
+        simulation.init();
+
+    }//GEN-LAST:event_sliderAnimationScaleStateChanged
+
+    private void checkboxRiverItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxRiverItemStateChanged
+        if (checkboxRiver.isSelected()) {
+            simulation.riverEnabled = true;
+        } else {
+            simulation.riverEnabled = false;
+        }
+        animation.repaint();
+    }//GEN-LAST:event_checkboxRiverItemStateChanged
+
+    private Vector trimMouseXYtoAnimationBoudaries(final MouseEvent evt) {
+        int x = evt.getX();
+        int y = evt.getY();
+        if (x >= animation.getWidth()) {
+            x = animation.getWidth();
+        } else if (evt.getX() <= 0) {
+            x = -animation.getWidth();
+        }
+        if (y >= animation.getHeight()) {
+            y = animation.getHeight();
+        } else if (evt.getY() <= 0) {
+            y = -animation.getHeight();
+        }
+        return new Vector(x, y);
+    }
+
+    private void setStartingDirection(final MouseEvent evt) {
+        Vector direction;
+        if (simulation.paintRunnerDirection) {
+            direction = frameToMath(trimMouseXYtoAnimationBoudaries(evt)); // }:o[
+            simulation.runnerDirectionLine.x1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).x;
+            simulation.runnerDirectionLine.y1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).y;
+            simulation.runnerDirectionLine.x2 = direction.x;
+            simulation.runnerDirectionLine.y2 = direction.y;
+            if (simulation.mouseControlEnabled && comboBoxForm.getSelectedItem().equals("Gerade")) {
+                Double stepLength = Math.abs(Vector.length(new Vector(simulation.runnerDirectionLine.x1 - simulation.runnerDirectionLine.x2,
+                        simulation.runnerDirectionLine.y1 - simulation.runnerDirectionLine.y2)));
+                if (stepLength > 10.0) {
+                    stepLength = 10.0;
+                } else if (stepLength < 0.01) {
+                    stepLength = 0.01;
+                }
+                simulation.stepLengthRunner = stepLength * 0.01;
+                numberfieldVelRunner.setText(String.format("%6.2f", stepLength));
+            }
+            animation.repaint();
+        }
     }
 
     private void setStartingPosition(final MouseEvent evt) {
         Vector coordinate = new Vector(evt.getX(), evt.getY());
-        if (eventFlag.equals("pos_r")) {
+        if (eventFlagPosition.equals("pos_r")) {
             addVectorToList(simulation.dataRunner, coordinate);
-            Vector trashV1 = frameToMath(coordinate);
-
-//            simulation.runnerDirectionLine  = new Line2D.Double(trashV1.getX(), trashV1.getY(),trashV1.getX(), trashV1.getY());
-            simulation.runnerDirectionLine = new Line2D.Double(-4, -2, 4, 2);
-            if (comboBoxForm.getSelectedItem().toString().equals("Gerade")) {
-                simulation.paintRunnerDirection = true;
-                MouseListener[] mouseListeners = animation.getMouseListeners();
-                Arrays.asList(animation.getMouseListeners()).removeIf(i -> true);
-                animation.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseMoved(MouseEvent e) {
-                        Vector trashV2 = frameToMath(new Vector(e.getX(), e.getY()));
-                        simulation.runnerDirectionLine.x2 = trashV2.getX();
-                        simulation.runnerDirectionLine.y2 = trashV2.getY();
-                        animation.repaint();
-                    }
-                });
-            }
-        } else if (eventFlag.equals("pos_cb")) {
+            simulation.paintRunnerDirection = true;
+            setStartingDirection(evt);
+            buttonReset.setEnabled(true);
+        } else if (eventFlagPosition.equals("pos_cb")) {
             addVectorToList(simulation.dataChaserBlue, coordinate);
-        } else if (eventFlag.equals("pos_cr")) {
+            buttonReset.setEnabled(true);
+        } else if (eventFlagPosition.equals("pos_cr")) {
             addVectorToList(simulation.dataChaserRed, coordinate);
+            buttonReset.setEnabled(true);
         }
-
+        sliderAnimationScale.setEnabled(false);
         simulation.fireCoordinateChange();
-
-        buttonReset.setEnabled(true);
-        eventFlag = "";
+        eventFlagPosition = "";
     }
 
     private void addVectorToList(ArrayList<Vector> vectorList, Vector coordinate) {
@@ -775,16 +809,24 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Frame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Frame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Frame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Frame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -803,27 +845,29 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private javax.swing.JButton buttonOnOff;
     private javax.swing.JButton buttonPosChaserBlue;
     private javax.swing.JButton buttonPosChaserRed;
-    private javax.swing.JButton buttonPosRnner;
+    private javax.swing.JButton buttonPosRunner;
     private javax.swing.JButton buttonReset;
     private javax.swing.JCheckBox checkboxChaserBlue;
     private javax.swing.JCheckBox checkboxChaserRed;
+    private javax.swing.JCheckBox checkboxMouseControl;
+    private javax.swing.JCheckBox checkboxRiver;
     private javax.swing.JComboBox<String> comboBoxForm;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSlider jSlider1;
+    private JNumberField numberfieldAnimationScale;
     private JNumberField numberfieldPosChaserBlueX;
     private JNumberField numberfieldPosChaserBlueY;
     private JNumberField numberfieldPosChaserRedX;
     private JNumberField numberfieldPosChaserRedY;
     private JNumberField numberfieldPosRunnerX;
     private JNumberField numberfieldPosRunnerY;
-    private JNumberField numberfieldScale;
     private JNumberField numberfieldVelChaserBlue;
     private JNumberField numberfieldVelChaserRed;
     private JNumberField numberfieldVelRunner;
+    private javax.swing.JSlider sliderAnimationScale;
     private javax.swing.JSlider sliderVelChaserBlue;
     private javax.swing.JSlider sliderVelChaserRed;
     private javax.swing.JSlider sliderVelRunner;

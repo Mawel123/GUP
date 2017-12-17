@@ -33,7 +33,8 @@ public class Simulation implements MathPainter, Runnable {
     public double stepLengthRunner = 0.01;
     public double stepLengthChaserBlue = 0.01;
     public double stepLengthChaserRed = 0.01;
-    public double stepLengthRiver = 0.0075 * animationScale;
+    public double riverCurrentVelocity = 0.001;
+    private double stepLengthRiver = 0.001;
     public double radius = 0.15;
 
     Graphics2D g;
@@ -205,6 +206,8 @@ public class Simulation implements MathPainter, Runnable {
         if (dataChaserRed.isEmpty()) {
             dataChaserRed.add(new Vector(2 * animationScale * Math.PI, -4 * animationScale / Math.sqrt(2)));
         }
+        
+        
 
         fireCoordinateChange();
     }
@@ -259,6 +262,8 @@ public class Simulation implements MathPainter, Runnable {
             double amplitude = 0.01 * stepLengthRunner * 100 * Math.PI;
 
             alpha = Math.atan2(runnerDirectionLine.y2 - runnerDirectionLine.y1, runnerDirectionLine.x2 - runnerDirectionLine.x1);
+            //River
+            stepLengthRiver = riverCurrentVelocity * animationScale;
             //line
             if (runnerMode.equals("Gerade")) {
                 stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
@@ -317,6 +322,7 @@ public class Simulation implements MathPainter, Runnable {
             }
 
             //River
+            stepLengthRiver = riverCurrentVelocity * animationScale;
             //building arraylists
             dataRunner.add(nextRunner);
             dataChaserBlue.add(nextChaserBlue);

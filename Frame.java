@@ -31,6 +31,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelRunner.setText(String.format("%6.2f", simulation.stepLengthRunner * 100));
         numberfieldVelChaserBlue.setText(String.format("%6.2f", simulation.stepLengthChaserBlue * 100));
         numberfieldVelChaserRed.setText(String.format("%6.2f", simulation.stepLengthChaserRed * 100));
+        numberfieldRiverStepLength.setText(String.format("%6.2f", sliderRiverStepLength.getValue() * 0.1));
 
         sliderVelRunner.setValue(10);
         sliderVelChaserBlue.setValue(10);
@@ -67,14 +68,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         if (evt.getPropertyName().equals("nextChaserBlue")) {
             v = (Vector) evt.getNewValue();
-            numberfieldPosChaserBlueX.setText("" + String.format("%6.2f", v.x));
             numberfieldPosChaserBlueY.setText("" + String.format("%6.2f", v.y));
+            numberfieldPosChaserBlueX.setText("" + String.format("%6.2f", v.x));
         }
 
         if (evt.getPropertyName().equals("nextChaserRed")) {
             v = (Vector) evt.getNewValue();
-            numberfieldPosChaserRedX.setText("" + String.format("%6.2f", v.x));
             numberfieldPosChaserRedY.setText("" + String.format("%6.2f", v.y));
+            numberfieldPosChaserRedX.setText("" + String.format("%6.2f", v.x));
         }
     }
 
@@ -100,10 +101,10 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         buttonPosChaserRed = new javax.swing.JButton();
         numberfieldPosRunnerY = new JNumberField();
         numberfieldPosRunnerX = new JNumberField();
-        numberfieldPosChaserBlueX = new JNumberField();
         numberfieldPosChaserBlueY = new JNumberField();
-        numberfieldPosChaserRedX = new JNumberField();
+        numberfieldPosChaserBlueX = new JNumberField();
         numberfieldPosChaserRedY = new JNumberField();
+        numberfieldPosChaserRedX = new JNumberField();
         jLabel1 = new javax.swing.JLabel();
         numberfieldVelRunner = new JNumberField();
         numberfieldVelChaserBlue = new JNumberField();
@@ -116,16 +117,20 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelChaserRed = new javax.swing.JSlider();
         jLabel5 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         sliderAnimationScale = new javax.swing.JSlider();
         checkboxMouseControl = new javax.swing.JCheckBox();
-        checkboxRiver = new javax.swing.JCheckBox();
+        checkboxRiverEnabled = new javax.swing.JCheckBox();
+        sliderRiverStepLength = new javax.swing.JSlider();
+        numberfieldRiverStepLength = new JNumberField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(850, 650));
+        setPreferredSize(new java.awt.Dimension(850, 650));
 
         Field.setLayout(new java.awt.BorderLayout());
 
         animation.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        animation.setPreferredSize(new java.awt.Dimension(601, 338));
         animation.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 animationMouseMoved(evt);
@@ -144,6 +149,8 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Field.add(animation, java.awt.BorderLayout.CENTER);
 
         ui.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ui.setMinimumSize(new java.awt.Dimension(850, 210));
+        ui.setPreferredSize(new java.awt.Dimension(850, 210));
         ui.setLayout(new java.awt.GridBagLayout());
 
         buttonReset.setText("RESET");
@@ -202,7 +209,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(checkboxChaserRed, gridBagConstraints);
 
         buttonPosRunner.setText("Ziel");
-        buttonPosRunner.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Position", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosRunner.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Positionieren", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         buttonPosRunner.setIconTextGap(0);
         buttonPosRunner.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,7 +225,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(buttonPosRunner, gridBagConstraints);
 
         buttonPosChaserBlue.setText("Verfolger Blau");
-        buttonPosChaserBlue.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Position", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosChaserBlue.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Positionieren", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         buttonPosChaserBlue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPosChaserBlueActionPerformed(evt);
@@ -233,7 +240,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(buttonPosChaserBlue, gridBagConstraints);
 
         buttonPosChaserRed.setText("Verfolger Rot");
-        buttonPosChaserRed.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Position", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosChaserRed.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Positionieren", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         buttonPosChaserRed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPosChaserRedActionPerformed(evt);
@@ -269,49 +276,49 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
         ui.add(numberfieldPosRunnerX, gridBagConstraints);
 
-        numberfieldPosChaserBlueX.setEditable(false);
-        numberfieldPosChaserBlueX.setColumns(4);
-        numberfieldPosChaserBlueX.setFocusable(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 2;
-        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
-        ui.add(numberfieldPosChaserBlueX, gridBagConstraints);
-
         numberfieldPosChaserBlueY.setEditable(false);
         numberfieldPosChaserBlueY.setColumns(4);
         numberfieldPosChaserBlueY.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
         ui.add(numberfieldPosChaserBlueY, gridBagConstraints);
 
-        numberfieldPosChaserRedX.setEditable(false);
-        numberfieldPosChaserRedX.setColumns(4);
-        numberfieldPosChaserRedX.setFocusable(false);
+        numberfieldPosChaserBlueX.setEditable(false);
+        numberfieldPosChaserBlueX.setColumns(4);
+        numberfieldPosChaserBlueX.setFocusable(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
+        ui.add(numberfieldPosChaserBlueX, gridBagConstraints);
+
+        numberfieldPosChaserRedY.setEditable(false);
+        numberfieldPosChaserRedY.setColumns(4);
+        numberfieldPosChaserRedY.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
-        ui.add(numberfieldPosChaserRedX, gridBagConstraints);
+        ui.add(numberfieldPosChaserRedY, gridBagConstraints);
 
-        numberfieldPosChaserRedY.setEditable(false);
-        numberfieldPosChaserRedY.setColumns(4);
-        numberfieldPosChaserRedY.setFocusable(false);
+        numberfieldPosChaserRedX.setEditable(false);
+        numberfieldPosChaserRedX.setColumns(4);
+        numberfieldPosChaserRedX.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
-        ui.add(numberfieldPosChaserRedY, gridBagConstraints);
+        ui.add(numberfieldPosChaserRedX, gridBagConstraints);
 
         jLabel1.setText("Geschwindigkeit:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -325,33 +332,33 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelRunner.setColumns(4);
         numberfieldVelRunner.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 18;
+        gridBagConstraints.gridx = 19;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
-        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 7);
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 5);
         ui.add(numberfieldVelRunner, gridBagConstraints);
 
         numberfieldVelChaserBlue.setEditable(false);
         numberfieldVelChaserBlue.setColumns(4);
         numberfieldVelChaserBlue.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 18;
+        gridBagConstraints.gridx = 19;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
-        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 7);
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 5);
         ui.add(numberfieldVelChaserBlue, gridBagConstraints);
 
         numberfieldVelChaserRed.setEditable(false);
         numberfieldVelChaserRed.setColumns(4);
         numberfieldVelChaserRed.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 18;
+        gridBagConstraints.gridx = 19;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
-        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 7);
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 5);
         ui.add(numberfieldVelChaserRed, gridBagConstraints);
 
         comboBoxForm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gerade", "Sinus", "Kreis" }));
@@ -447,19 +454,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         ui.add(jLabel8, gridBagConstraints);
 
-        jSeparator1.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        ui.add(jSeparator1, gridBagConstraints);
-
         sliderAnimationScale.setMajorTickSpacing(10);
         sliderAnimationScale.setMaximum(50);
         sliderAnimationScale.setMinimum(10);
-        sliderAnimationScale.setMinorTickSpacing(1);
-        sliderAnimationScale.setPaintTicks(true);
         sliderAnimationScale.setValue(10);
+        sliderAnimationScale.setPreferredSize(new java.awt.Dimension(120, 20));
         sliderAnimationScale.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sliderAnimationScaleStateChanged(evt);
@@ -470,6 +469,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.gridy = 6;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
         ui.add(sliderAnimationScale, gridBagConstraints);
 
         checkboxMouseControl.setText("Maussteuerung");
@@ -484,18 +484,49 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         ui.add(checkboxMouseControl, gridBagConstraints);
 
-        checkboxRiver.setSelected(true);
-        checkboxRiver.setText("Fluss");
-        checkboxRiver.addItemListener(new java.awt.event.ItemListener() {
+        checkboxRiverEnabled.setSelected(true);
+        checkboxRiverEnabled.setText("Fluss");
+        checkboxRiverEnabled.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                checkboxRiverItemStateChanged(evt);
+                checkboxRiverEnabledEnabledItemStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 18;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
-        ui.add(checkboxRiver, gridBagConstraints);
+        gridBagConstraints.gridx = 16;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        ui.add(checkboxRiverEnabled, gridBagConstraints);
+
+        sliderRiverStepLength.setMaximum(50);
+        sliderRiverStepLength.setMinimum(-50);
+        sliderRiverStepLength.setPaintLabels(true);
+        sliderRiverStepLength.setPaintTicks(true);
+        sliderRiverStepLength.setToolTipText("");
+        sliderRiverStepLength.setValue(1);
+        sliderRiverStepLength.setPreferredSize(new java.awt.Dimension(120, 31));
+        sliderRiverStepLength.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderRiverStepLengthStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 16;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.ipady = 13;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        ui.add(sliderRiverStepLength, gridBagConstraints);
+
+        numberfieldRiverStepLength.setColumns(4);
+        numberfieldRiverStepLength.setFocusable(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 19;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 2;
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 5);
+        ui.add(numberfieldRiverStepLength, gridBagConstraints);
 
         Field.add(ui, java.awt.BorderLayout.SOUTH);
 
@@ -658,19 +689,31 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     }//GEN-LAST:event_comboBoxFormItemStateChanged
 
     private void sliderVelChaserRedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVelChaserRedStateChanged
+        if (sliderVelChaserRed.getValue() < 1E-4) {
+            simulation.stepLengthChaserRed = 1E-4;
+        } else {
         simulation.stepLengthChaserRed = sliderVelChaserRed.getValue() * 0.1 * 0.01;
+        }
         numberfieldVelChaserRed.setText(String.format("%6.2f", (sliderVelChaserRed.getValue() * 0.1)));
         buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelChaserRedStateChanged
 
     private void sliderVelChaserBlueStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVelChaserBlueStateChanged
+        if (sliderVelChaserBlue.getValue() < 1E-4) {
+            simulation.stepLengthChaserBlue = 1E-4;
+        } else {
         simulation.stepLengthChaserBlue = sliderVelChaserBlue.getValue() * 0.1 * 0.01;
+        }
         numberfieldVelChaserBlue.setText(String.format("%6.2f", (sliderVelChaserBlue.getValue() * 0.1)));
         buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelChaserBlueStateChanged
 
     private void sliderVelRunnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVelRunnerStateChanged
+        if (sliderVelRunner.getValue() < 1E-4) {
+            simulation.stepLengthRunner = 1E-4;
+        } else {
         simulation.stepLengthRunner = sliderVelRunner.getValue() * 0.1 * 0.01;
+        }
         numberfieldVelRunner.setText(String.format("%6.2f", (sliderVelRunner.getValue() * 0.1)));
         buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelRunnerStateChanged
@@ -720,14 +763,21 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
     }//GEN-LAST:event_sliderAnimationScaleStateChanged
 
-    private void checkboxRiverItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxRiverItemStateChanged
-        if (checkboxRiver.isSelected()) {
+    private void checkboxRiverEnabledEnabledItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxRiverEnabledEnabledItemStateChanged
+        if (checkboxRiverEnabled.isSelected()) {
             simulation.riverEnabled = true;
+            sliderRiverStepLength.setEnabled(true);
         } else {
             simulation.riverEnabled = false;
+            sliderRiverStepLength.setEnabled(false);
         }
         animation.repaint();
-    }//GEN-LAST:event_checkboxRiverItemStateChanged
+    }//GEN-LAST:event_checkboxRiverEnabledEnabledItemStateChanged
+
+    private void sliderRiverStepLengthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderRiverStepLengthStateChanged
+        numberfieldRiverStepLength.setText(String.format("%6.2f", sliderRiverStepLength.getValue() * 0.1));
+        simulation.riverCurrentVelocity = sliderRiverStepLength.getValue() * 0.1 * 0.01;
+    }//GEN-LAST:event_sliderRiverStepLengthStateChanged
 
     private Vector trimMouseXYtoAnimationBoudaries(final MouseEvent evt) {
         int x = evt.getX();
@@ -850,13 +900,12 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private javax.swing.JCheckBox checkboxChaserBlue;
     private javax.swing.JCheckBox checkboxChaserRed;
     private javax.swing.JCheckBox checkboxMouseControl;
-    private javax.swing.JCheckBox checkboxRiver;
+    private javax.swing.JCheckBox checkboxRiverEnabled;
     private javax.swing.JComboBox<String> comboBoxForm;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JSeparator jSeparator1;
     private JNumberField numberfieldAnimationScale;
     private JNumberField numberfieldPosChaserBlueX;
     private JNumberField numberfieldPosChaserBlueY;
@@ -864,10 +913,12 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private JNumberField numberfieldPosChaserRedY;
     private JNumberField numberfieldPosRunnerX;
     private JNumberField numberfieldPosRunnerY;
+    private JNumberField numberfieldRiverStepLength;
     private JNumberField numberfieldVelChaserBlue;
     private JNumberField numberfieldVelChaserRed;
     private JNumberField numberfieldVelRunner;
     private javax.swing.JSlider sliderAnimationScale;
+    private javax.swing.JSlider sliderRiverStepLength;
     private javax.swing.JSlider sliderVelChaserBlue;
     private javax.swing.JSlider sliderVelChaserRed;
     private javax.swing.JSlider sliderVelRunner;

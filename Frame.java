@@ -48,10 +48,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         if (evt.getPropertyName().equals("hit")) {
             simulation.stop();
             buttonOnOff.setEnabled(false);
-            buttonReset.setEnabled(true);
-            simulation.mouseControlEnabled = false;
+            buttonReset.setEnabled(true); 
             simulation.paintRunnerDirection = false;
-            simulation.paintRunnerDirectionDone = false;
+            simulation.mouseControlEnabled = false;
             animation.repaint();
             if (buttonOnOff.getText()
                     .equals("STOP")) {

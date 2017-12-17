@@ -23,6 +23,7 @@ public class Simulation implements MathPainter, Runnable {
     private Thread step;
     public JMath animation;
     public boolean next;
+    private boolean hit = false;
     private long timePassed;
     private long stepTime;
     public PropertyChangeSupport pcs;
@@ -125,10 +126,11 @@ public class Simulation implements MathPainter, Runnable {
             g.setColor(Color.lightGray);
             drawLine(runnerDirectionLine);
         }
-
-        if (paintRunnerDirectionDone && (runnerMode.equals("Gerade") || runnerMode.equals("Sinus"))) {
-            g.setColor(Color.lightGray);
-            drawLine(runnerDirectionLine);
+        if (!next && !hit) {
+            if (paintRunnerDirectionDone && (runnerMode.equals("Gerade") || runnerMode.equals("Sinus"))) {
+                g.setColor(Color.lightGray);
+                drawLine(runnerDirectionLine);
+            }
         }
 
         g.setColor(Color.green);
@@ -206,8 +208,6 @@ public class Simulation implements MathPainter, Runnable {
         if (dataChaserRed.isEmpty()) {
             dataChaserRed.add(new Vector(2 * animationScale * Math.PI, -4 * animationScale / Math.sqrt(2)));
         }
-        
-        
 
         fireCoordinateChange();
     }
@@ -248,10 +248,12 @@ public class Simulation implements MathPainter, Runnable {
             if (Vector.length(Vector.subtract(chaserBlueLastInList, runnerLastInList)) <= hitbox
                     || Vector.length(Vector.subtract(chaserRedLastInList, runnerLastInList)) <= hitbox) {
                 pcs.firePropertyChange("hit", null, null);
+                hit = true;
             }
             //out detection
             if (Math.abs(runnerLastInList.getX()) >= boundingBox_x || Math.abs(runnerLastInList.getY()) >= boundingBox_y) {
                 pcs.firePropertyChange("hit", null, null);
+                hit = true;
             }
 
             //calculating next runner point

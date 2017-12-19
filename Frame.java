@@ -47,8 +47,12 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         //on hit
         if (evt.getPropertyName().equals("hit")) {
             simulation.stop();
+            if (evt.getNewValue().toString().equals("der blaue Verfolger") || evt.getNewValue().toString().equals("der rote Verfolger")) {
+                textfiledStatus.setText("" + evt.getNewValue().toString() + " hat das Ziel eingeholt!");
+            } else
+                textfiledStatus.setText("das Ziel hat den Rand des Spielfelds erreicht!");
             buttonOnOff.setEnabled(false);
-            buttonReset.setEnabled(true); 
+            buttonReset.setEnabled(true);
             simulation.paintRunnerDirection = false;
             simulation.mouseControlEnabled = false;
             animation.repaint();
@@ -88,6 +92,8 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jInternalFrame1 = new javax.swing.JInternalFrame();
+        jTextField2 = new javax.swing.JTextField();
         Field = new javax.swing.JPanel();
         animation = new JMath();
         ui = new javax.swing.JPanel();
@@ -121,11 +127,17 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         checkboxRiverEnabled = new javax.swing.JCheckBox();
         sliderRiverStepLength = new javax.swing.JSlider();
         numberfieldRiverStepLength = new JNumberField();
+        jPanel2 = new javax.swing.JPanel();
+        textfiledStatus = new javax.swing.JTextField();
+
+        jInternalFrame1.setVisible(true);
+
+        jTextField2.setText("jTextField2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(850, 650));
-        setPreferredSize(new java.awt.Dimension(850, 650));
 
+        Field.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
         Field.setLayout(new java.awt.BorderLayout());
 
         animation.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -148,12 +160,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Field.add(animation, java.awt.BorderLayout.CENTER);
 
         ui.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ui.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         ui.setMinimumSize(new java.awt.Dimension(850, 210));
         ui.setPreferredSize(new java.awt.Dimension(850, 210));
         ui.setLayout(new java.awt.GridBagLayout());
 
         buttonReset.setText("RESET");
+        buttonReset.setToolTipText("Positionen zurücksetzen");
         buttonReset.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        buttonReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonReset.setEnabled(false);
         buttonReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,7 +176,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 30;
@@ -169,14 +184,16 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(buttonReset, gridBagConstraints);
 
         buttonOnOff.setText("START");
+        buttonOnOff.setToolTipText("Starten und Anhalten der Animation");
         buttonOnOff.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        buttonOnOff.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonOnOff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonOnOffActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 30;
@@ -184,6 +201,8 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(buttonOnOff, gridBagConstraints);
 
         checkboxChaserBlue.setSelected(true);
+        checkboxChaserBlue.setToolTipText("blauer Verfolger AN/AUS");
+        checkboxChaserBlue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         checkboxChaserBlue.setIconTextGap(0);
         checkboxChaserBlue.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -191,11 +210,13 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
         ui.add(checkboxChaserBlue, gridBagConstraints);
 
         checkboxChaserRed.setSelected(true);
+        checkboxChaserRed.setToolTipText("roter Verfolger AN/AUS");
+        checkboxChaserRed.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         checkboxChaserRed.setIconTextGap(0);
         checkboxChaserRed.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -203,12 +224,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 5;
         ui.add(checkboxChaserRed, gridBagConstraints);
 
         buttonPosRunner.setText("Ziel");
+        buttonPosRunner.setToolTipText("\nLinksklick aufs Spielfeld  ->  nocheinmal Linksklick um die Richtung zu setzen");
         buttonPosRunner.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Positionieren", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosRunner.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonPosRunner.setIconTextGap(0);
         buttonPosRunner.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,7 +239,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 30;
@@ -224,14 +247,16 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(buttonPosRunner, gridBagConstraints);
 
         buttonPosChaserBlue.setText("Verfolger Blau");
+        buttonPosChaserBlue.setToolTipText("Linksklick aufs Spielfeld");
         buttonPosChaserBlue.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Positionieren", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosChaserBlue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonPosChaserBlue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPosChaserBlueActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 30;
@@ -239,14 +264,16 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(buttonPosChaserBlue, gridBagConstraints);
 
         buttonPosChaserRed.setText("Verfolger Rot");
+        buttonPosChaserRed.setToolTipText("Linksklick aufs Spielfeld");
         buttonPosChaserRed.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Positionieren", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        buttonPosChaserRed.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonPosChaserRed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPosChaserRedActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 30;
@@ -257,7 +284,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldPosRunnerY.setColumns(4);
         numberfieldPosRunnerY.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridx = 9;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -268,7 +295,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldPosRunnerX.setColumns(4);
         numberfieldPosRunnerX.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -279,7 +306,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldPosChaserBlueY.setColumns(4);
         numberfieldPosChaserBlueY.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridx = 9;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -290,7 +317,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldPosChaserBlueX.setColumns(4);
         numberfieldPosChaserBlueX.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -301,7 +328,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldPosChaserRedY.setColumns(4);
         numberfieldPosChaserRedY.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridx = 9;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -312,7 +339,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldPosChaserRedX.setColumns(4);
         numberfieldPosChaserRedX.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -321,7 +348,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         jLabel1.setText("Geschwindigkeit:");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 16;
+        gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -331,7 +358,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelRunner.setColumns(4);
         numberfieldVelRunner.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 19;
+        gridBagConstraints.gridx = 13;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -342,7 +369,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelChaserBlue.setColumns(4);
         numberfieldVelChaserBlue.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 19;
+        gridBagConstraints.gridx = 13;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -353,7 +380,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldVelChaserRed.setColumns(4);
         numberfieldVelChaserRed.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 19;
+        gridBagConstraints.gridx = 13;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
@@ -361,22 +388,26 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(numberfieldVelChaserRed, gridBagConstraints);
 
         comboBoxForm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gerade", "Sinus", "Kreis" }));
+        comboBoxForm.setToolTipText("Bahnfrom des Verfolgten Ziels auswählen");
+        comboBoxForm.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        comboBoxForm.setPreferredSize(new java.awt.Dimension(80, 39));
         comboBoxForm.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 comboBoxFormItemStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipady = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         ui.add(comboBoxForm, gridBagConstraints);
 
         numberfieldAnimationScale.setColumns(4);
         numberfieldAnimationScale.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
@@ -384,7 +415,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         jLabel4.setText("Maßstab:");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 8, 0, 0);
@@ -393,13 +424,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelRunner.setMajorTickSpacing(10);
         sliderVelRunner.setMinorTickSpacing(2);
         sliderVelRunner.setPaintTicks(true);
+        sliderVelRunner.setToolTipText("Ziel");
+        sliderVelRunner.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderVelRunner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sliderVelRunnerStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 16;
+        gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
@@ -408,13 +441,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelChaserBlue.setMajorTickSpacing(10);
         sliderVelChaserBlue.setMinorTickSpacing(2);
         sliderVelChaserBlue.setPaintTicks(true);
+        sliderVelChaserBlue.setToolTipText("blauer Verfolger");
+        sliderVelChaserBlue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderVelChaserBlue.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sliderVelChaserBlueStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 16;
+        gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
@@ -423,15 +458,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelChaserRed.setMajorTickSpacing(10);
         sliderVelChaserRed.setMinorTickSpacing(2);
         sliderVelChaserRed.setPaintTicks(true);
-        sliderVelChaserRed.setToolTipText("");
-        sliderVelChaserRed.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        sliderVelChaserRed.setToolTipText("roter Verfolger");
+        sliderVelChaserRed.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderVelChaserRed.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sliderVelChaserRedStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 16;
+        gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.ipadx = 10;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
@@ -439,7 +474,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         jLabel5.setText("x:");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -447,7 +482,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         jLabel8.setText("y:");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridx = 9;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -456,7 +491,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderAnimationScale.setMajorTickSpacing(10);
         sliderAnimationScale.setMaximum(50);
         sliderAnimationScale.setMinimum(10);
+        sliderAnimationScale.setToolTipText("Startpositionen und Bahnkurven des Ziels  skalieren");
         sliderAnimationScale.setValue(10);
+        sliderAnimationScale.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderAnimationScale.setPreferredSize(new java.awt.Dimension(120, 20));
         sliderAnimationScale.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -464,35 +501,39 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
         ui.add(sliderAnimationScale, gridBagConstraints);
 
         checkboxMouseControl.setText("Maussteuerung");
+        checkboxMouseControl.setToolTipText("Aktivieren um das Ziel mit der Maus steuern zu können");
+        checkboxMouseControl.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         checkboxMouseControl.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 checkboxMouseControlItemStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         ui.add(checkboxMouseControl, gridBagConstraints);
 
         checkboxRiverEnabled.setSelected(true);
         checkboxRiverEnabled.setText("Fluss");
+        checkboxRiverEnabled.setToolTipText("Fluss AN/AUS");
+        checkboxRiverEnabled.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         checkboxRiverEnabled.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 checkboxRiverEnabledEnabledItemStateChanged(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 16;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 11;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         ui.add(checkboxRiverEnabled, gridBagConstraints);
@@ -501,8 +542,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderRiverStepLength.setMinimum(-50);
         sliderRiverStepLength.setPaintLabels(true);
         sliderRiverStepLength.setPaintTicks(true);
-        sliderRiverStepLength.setToolTipText("");
-        sliderRiverStepLength.setValue(1);
+        sliderRiverStepLength.setToolTipText("Geschwindigkeit der Flusstömung");
+        sliderRiverStepLength.setValue(5);
+        sliderRiverStepLength.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderRiverStepLength.setPreferredSize(new java.awt.Dimension(120, 31));
         sliderRiverStepLength.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -510,8 +552,8 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 16;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 11;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.ipady = 13;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
@@ -520,14 +562,22 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         numberfieldRiverStepLength.setColumns(4);
         numberfieldRiverStepLength.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 19;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 13;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 2;
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 5);
         ui.add(numberfieldRiverStepLength, gridBagConstraints);
 
         Field.add(ui, java.awt.BorderLayout.SOUTH);
+
+        jPanel2.setLayout(new java.awt.GridLayout());
+
+        textfiledStatus.setText("START um zu beginnen");
+        textfiledStatus.setFocusable(false);
+        jPanel2.add(textfiledStatus);
+
+        Field.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(Field, java.awt.BorderLayout.CENTER);
 
@@ -542,9 +592,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelRunner.setEnabled(false);
         sliderVelChaserBlue.setEnabled(false);
         sliderVelChaserRed.setEnabled(false);
-        numberfieldAnimationScale.setEnabled(false);
         checkboxMouseControl.setEnabled(false);
         sliderAnimationScale.setEnabled(false);
+        checkboxRiverEnabled.setEnabled(false);
+        sliderRiverStepLength.setEnabled(false);
+        textfiledStatus.setText("STOP um anzuhalten");
     }
 
     public void uiSetNotRunning() {
@@ -556,6 +608,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             sliderVelChaserBlue.setEnabled(true);
             sliderVelChaserRed.setEnabled(true);
             sliderAnimationScale.setEnabled(true);
+            textfiledStatus.setText("START um zu beginnen");
             if (checkboxChaserBlue.isSelected()) {
                 buttonPosChaserBlue.setEnabled(true);
             } else {
@@ -583,9 +636,12 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             sliderVelChaserBlue.setEnabled(false);
             sliderVelChaserRed.setEnabled(false);
             sliderAnimationScale.setEnabled(false);
+            textfiledStatus.setText("START zum fortfahren, RESET zum zurücksetzen");
         }
         buttonOnOff.setEnabled(true);
         checkboxMouseControl.setEnabled(true);
+        checkboxRiverEnabled.setEnabled(true);
+        sliderRiverStepLength.setEnabled(true);
     }
 
     protected Vector frameToMath(Vector coordinates) {
@@ -628,23 +684,28 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         checkboxMouseControl.setSelected(false);
         uiSetNotRunning();
         buttonReset.setEnabled(false);
-
         numberfieldVelRunner.setText(String.format("%6.2f", (sliderVelRunner.getValue() * 0.1)));
-        sliderVelRunner.setValue(10);
-        sliderVelChaserBlue.setValue(10);
-        sliderVelChaserRed.setValue(10);
+        if (sliderVelRunner.getValue() < 1E-4) {
+            simulation.stepLengthRunner = 1E-4;
+        } else {
+            simulation.stepLengthRunner = sliderVelRunner.getValue() * 0.1 * 0.01;
+        }
+        simulation.hit = false;
     }//GEN-LAST:event_buttonResetActionPerformed
 
     private void buttonPosRunnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosRunnerActionPerformed
         eventFlagPosition = "pos_r";
+        textfiledStatus.setText("Linksklick auf die gewünschte Startposition des Ziels");
     }//GEN-LAST:event_buttonPosRunnerActionPerformed
 
     private void buttonPosChaserBlueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosChaserBlueActionPerformed
         eventFlagPosition = "pos_cb";
+        textfiledStatus.setText("Linksklick auf die gewünschte Startposition des Blauen Verfolgers");
     }//GEN-LAST:event_buttonPosChaserBlueActionPerformed
 
     private void buttonPosChaserRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosChaserRedActionPerformed
         eventFlagPosition = "pos_cr";
+        textfiledStatus.setText("Linksklick auf die gewünschte Startposition des Roten Verfolgers");
     }//GEN-LAST:event_buttonPosChaserRedActionPerformed
 
     private void checkboxChaserBlueItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxChaserBlueItemStateChanged
@@ -679,10 +740,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
     private void comboBoxFormItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboBoxFormItemStateChanged
         simulation.runnerMode = comboBoxForm.getSelectedItem().toString();
-        if (comboBoxForm.getSelectedItem().equals("Gerade") && checkboxMouseControl.isSelected()) {
+        if (comboBoxForm.getSelectedItem().toString().equals("Gerade") && checkboxMouseControl.isSelected()) {
             sliderVelRunner.setEnabled(false);
+            checkboxMouseControl.setEnabled(true);
+        } else if (comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
+            checkboxMouseControl.setSelected(false);
+            checkboxMouseControl.setEnabled(false);
         } else {
             sliderVelRunner.setEnabled(true);
+            checkboxMouseControl.setEnabled(true);
         }
         animation.repaint();
     }//GEN-LAST:event_comboBoxFormItemStateChanged
@@ -691,30 +757,27 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         if (sliderVelChaserRed.getValue() < 1E-4) {
             simulation.stepLengthChaserRed = 1E-4;
         } else {
-        simulation.stepLengthChaserRed = sliderVelChaserRed.getValue() * 0.1 * 0.01;
+            simulation.stepLengthChaserRed = sliderVelChaserRed.getValue() * 0.1 * 0.01;
         }
         numberfieldVelChaserRed.setText(String.format("%6.2f", (sliderVelChaserRed.getValue() * 0.1)));
-        buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelChaserRedStateChanged
 
     private void sliderVelChaserBlueStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVelChaserBlueStateChanged
         if (sliderVelChaserBlue.getValue() < 1E-4) {
             simulation.stepLengthChaserBlue = 1E-4;
         } else {
-        simulation.stepLengthChaserBlue = sliderVelChaserBlue.getValue() * 0.1 * 0.01;
+            simulation.stepLengthChaserBlue = sliderVelChaserBlue.getValue() * 0.1 * 0.01;
         }
         numberfieldVelChaserBlue.setText(String.format("%6.2f", (sliderVelChaserBlue.getValue() * 0.1)));
-        buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelChaserBlueStateChanged
 
     private void sliderVelRunnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderVelRunnerStateChanged
         if (sliderVelRunner.getValue() < 1E-4) {
             simulation.stepLengthRunner = 1E-4;
         } else {
-        simulation.stepLengthRunner = sliderVelRunner.getValue() * 0.1 * 0.01;
+            simulation.stepLengthRunner = sliderVelRunner.getValue() * 0.1 * 0.01;
         }
         numberfieldVelRunner.setText(String.format("%6.2f", (sliderVelRunner.getValue() * 0.1)));
-        buttonReset.setEnabled(true);
     }//GEN-LAST:event_sliderVelRunnerStateChanged
 
     private void animationMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animationMouseMoved
@@ -727,6 +790,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         if (simulation.paintRunnerDirection && !simulation.mouseControlEnabled) {
             simulation.paintRunnerDirection = false;
             simulation.paintRunnerDirectionDone = true;
+            textfiledStatus.setText("START um zu beginnen");
         }
         setStartingPosition(evt);
     }//GEN-LAST:event_animationMouseClicked
@@ -797,12 +861,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private void setStartingDirection(final MouseEvent evt) {
         Vector direction;
         if (simulation.paintRunnerDirection) {
+            textfiledStatus.setText("Zielrichtung anklicken");
             direction = frameToMath(trimMouseXYtoAnimationBoudaries(evt)); // }:o[
             simulation.runnerDirectionLine.x1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).x;
             simulation.runnerDirectionLine.y1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).y;
             simulation.runnerDirectionLine.x2 = direction.x;
             simulation.runnerDirectionLine.y2 = direction.y;
             if (simulation.mouseControlEnabled && comboBoxForm.getSelectedItem().equals("Gerade")) {
+                textfiledStatus.setText("Maussteuerung ist eingeschaltet");
                 Double stepLength = Math.abs(Vector.length(new Vector(simulation.runnerDirectionLine.x1 - simulation.runnerDirectionLine.x2,
                         simulation.runnerDirectionLine.y1 - simulation.runnerDirectionLine.y2)));
                 if (stepLength > 10.0) {
@@ -823,13 +889,16 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             addVectorToList(simulation.dataRunner, coordinate);
             simulation.paintRunnerDirection = true;
             setStartingDirection(evt);
+            textfiledStatus.setText("Zielrichtung anklicken");
             buttonReset.setEnabled(true);
         } else if (eventFlagPosition.equals("pos_cb")) {
             addVectorToList(simulation.dataChaserBlue, coordinate);
             buttonReset.setEnabled(true);
+            textfiledStatus.setText("START um zu beginnen");
         } else if (eventFlagPosition.equals("pos_cr")) {
             addVectorToList(simulation.dataChaserRed, coordinate);
             buttonReset.setEnabled(true);
+            textfiledStatus.setText("START um zu beginnen");
         }
         sliderAnimationScale.setEnabled(false);
         simulation.fireCoordinateChange();
@@ -901,10 +970,13 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private javax.swing.JCheckBox checkboxMouseControl;
     private javax.swing.JCheckBox checkboxRiverEnabled;
     private javax.swing.JComboBox<String> comboBoxForm;
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField jTextField2;
     private JNumberField numberfieldAnimationScale;
     private JNumberField numberfieldPosChaserBlueX;
     private JNumberField numberfieldPosChaserBlueY;
@@ -921,6 +993,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private javax.swing.JSlider sliderVelChaserBlue;
     private javax.swing.JSlider sliderVelChaserRed;
     private javax.swing.JSlider sliderVelRunner;
+    private javax.swing.JTextField textfiledStatus;
     private javax.swing.JPanel ui;
     // End of variables declaration//GEN-END:variables
 

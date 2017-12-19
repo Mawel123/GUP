@@ -49,8 +49,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             simulation.stop();
             if (evt.getNewValue().toString().equals("der blaue Verfolger") || evt.getNewValue().toString().equals("der rote Verfolger")) {
                 textfiledStatus.setText("" + evt.getNewValue().toString() + " hat das Ziel eingeholt!");
-            } else
+            } else {
                 textfiledStatus.setText("das Ziel hat den Rand des Spielfelds erreicht!");
+            }
             buttonOnOff.setEnabled(false);
             buttonReset.setEnabled(true);
             simulation.paintRunnerDirection = false;
@@ -796,6 +797,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     }//GEN-LAST:event_animationMouseClicked
 
     private void animationComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_animationComponentResized
+        simulation.stop();
+            if (buttonOnOff.getText().equals("STOP")) {
+                buttonOnOff.setText("START");
+                uiSetNotRunning();
+            }
         simulation.init();
         animation.repaint();
     }//GEN-LAST:event_animationComponentResized
@@ -861,7 +867,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private void setStartingDirection(final MouseEvent evt) {
         Vector direction;
         if (simulation.paintRunnerDirection) {
-            textfiledStatus.setText("Zielrichtung anklicken");
+            if (!comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
+                textfiledStatus.setText("Zielrichtung anklicken");
+            } else {
+                textfiledStatus.setText("START um zu beginnen");
+            }
             direction = frameToMath(trimMouseXYtoAnimationBoudaries(evt)); // }:o[
             simulation.runnerDirectionLine.x1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).x;
             simulation.runnerDirectionLine.y1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).y;
@@ -889,7 +899,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             addVectorToList(simulation.dataRunner, coordinate);
             simulation.paintRunnerDirection = true;
             setStartingDirection(evt);
-            textfiledStatus.setText("Zielrichtung anklicken");
+            if (!comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
+                textfiledStatus.setText("Zielrichtung anklicken");
+            } else {
+                textfiledStatus.setText("START um zu beginnen");
+            }
             buttonReset.setEnabled(true);
         } else if (eventFlagPosition.equals("pos_cb")) {
             addVectorToList(simulation.dataChaserBlue, coordinate);

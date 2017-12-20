@@ -48,9 +48,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         if (evt.getPropertyName().equals("hit")) {
             simulation.stop();
             if (evt.getNewValue().toString().equals("der blaue Verfolger") || evt.getNewValue().toString().equals("der rote Verfolger")) {
-                textfiledStatus.setText("" + evt.getNewValue().toString() + " hat das Ziel eingeholt!");
+                textfieldHint.setText("" + evt.getNewValue().toString() + " hat das Ziel eingeholt!");
             } else {
-                textfiledStatus.setText("das Ziel hat den Rand des Spielfelds erreicht!");
+                textfieldHint.setText("das Ziel hat den Rand des Spielfelds erreicht!");
             }
             buttonOnOff.setEnabled(false);
             buttonReset.setEnabled(true);
@@ -128,8 +128,8 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         checkboxRiverEnabled = new javax.swing.JCheckBox();
         sliderRiverStepLength = new javax.swing.JSlider();
         numberfieldRiverStepLength = new JNumberField();
-        jPanel2 = new javax.swing.JPanel();
-        textfiledStatus = new javax.swing.JTextField();
+        panelHint = new javax.swing.JPanel();
+        textfieldHint = new javax.swing.JTextField();
 
         jInternalFrame1.setVisible(true);
 
@@ -574,19 +574,19 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         Field.add(ui, java.awt.BorderLayout.SOUTH);
 
-        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
+        panelHint.setLayout(new java.awt.GridLayout(1, 0));
 
-        textfiledStatus.setBackground(new java.awt.Color(240, 240, 240));
-        textfiledStatus.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        textfiledStatus.setForeground(new java.awt.Color(0, 102, 255));
-        textfiledStatus.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
-        textfiledStatus.setBorder(null);
-        textfiledStatus.setCaretColor(new java.awt.Color(204, 204, 204));
-        textfiledStatus.setFocusable(false);
-        textfiledStatus.setPreferredSize(new java.awt.Dimension(850, 26));
-        jPanel2.add(textfiledStatus);
+        textfieldHint.setBackground(new java.awt.Color(240, 240, 240));
+        textfieldHint.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
+        textfieldHint.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        textfieldHint.setCaretColor(new java.awt.Color(204, 204, 204));
+        textfieldHint.setFocusable(false);
+        textfieldHint.setPreferredSize(new java.awt.Dimension(850, 26));
+        textfieldHint.setSelectionColor(new java.awt.Color(0, 0, 0));
+        panelHint.add(textfieldHint);
 
-        Field.add(jPanel2, java.awt.BorderLayout.NORTH);
+        Field.add(panelHint, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(Field, java.awt.BorderLayout.CENTER);
 
@@ -605,7 +605,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderAnimationScale.setEnabled(false);
         checkboxRiverEnabled.setEnabled(false);
         sliderRiverStepLength.setEnabled(false);
-        textfiledStatus.setText("STOP um anzuhalten");
+        textfieldHint.setText("STOP um anzuhalten");
     }
 
     public void uiSetNotRunning() {
@@ -613,11 +613,11 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             buttonReset.setEnabled(false);
             buttonPosRunner.setEnabled(true);
             comboBoxForm.setEnabled(true);
-            sliderVelRunner.setEnabled(true);
-            sliderVelChaserBlue.setEnabled(true);
-            sliderVelChaserRed.setEnabled(true);
+//            sliderVelRunner.setEnabled(true);
+//            sliderVelChaserBlue.setEnabled(true);
+//            sliderVelChaserRed.setEnabled(true);
             sliderAnimationScale.setEnabled(true);
-            textfiledStatus.setText("START um zu beginnen");
+            textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
             if (checkboxChaserBlue.isSelected()) {
                 buttonPosChaserBlue.setEnabled(true);
             } else {
@@ -630,9 +630,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             }
         } else if (simulation.dataRunner.size() == 1) {
             comboBoxForm.setEnabled(true);
-            sliderVelRunner.setEnabled(true);
-            sliderVelChaserBlue.setEnabled(true);
-            sliderVelChaserRed.setEnabled(true);
+//            sliderVelRunner.setEnabled(true);
+//            sliderVelChaserBlue.setEnabled(true);
+//            sliderVelChaserRed.setEnabled(true);
             sliderAnimationScale.setEnabled(true);
             sliderAnimationScale.setEnabled(false);
         } else {
@@ -641,13 +641,16 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             buttonPosChaserBlue.setEnabled(false);
             buttonPosChaserRed.setEnabled(false);
             comboBoxForm.setEnabled(false);
-            sliderVelRunner.setEnabled(false);
-            sliderVelChaserBlue.setEnabled(false);
-            sliderVelChaserRed.setEnabled(false);
+//            sliderVelRunner.setEnabled(false);
+//            sliderVelChaserBlue.setEnabled(false);
+//            sliderVelChaserRed.setEnabled(false);
             sliderAnimationScale.setEnabled(false);
-            textfiledStatus.setText("START zum fortfahren, RESET zum zurücksetzen");
+            textfieldHint.setText("START zum fortfahren, RESET zum zurücksetzen");
         }
         buttonOnOff.setEnabled(true);
+        sliderVelRunner.setEnabled(true);
+        sliderVelChaserBlue.setEnabled(true);
+        sliderVelChaserRed.setEnabled(true);
         checkboxMouseControl.setEnabled(true);
         checkboxRiverEnabled.setEnabled(true);
         sliderRiverStepLength.setEnabled(true);
@@ -704,30 +707,30 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
     private void buttonPosRunnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosRunnerActionPerformed
         eventFlagPosition = "pos_r";
-        textfiledStatus.setText("Linksklick auf die gewünschte Startposition des Ziels");
+        textfieldHint.setText("Linksklick auf die gewünschte Startposition des Ziels");
     }//GEN-LAST:event_buttonPosRunnerActionPerformed
 
     private void buttonPosChaserBlueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosChaserBlueActionPerformed
         eventFlagPosition = "pos_cb";
-        textfiledStatus.setText("Linksklick auf die gewünschte Startposition des Blauen Verfolgers");
+        textfieldHint.setText("Linksklick auf die gewünschte Startposition des Blauen Verfolgers");
     }//GEN-LAST:event_buttonPosChaserBlueActionPerformed
 
     private void buttonPosChaserRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPosChaserRedActionPerformed
         eventFlagPosition = "pos_cr";
-        textfiledStatus.setText("Linksklick auf die gewünschte Startposition des Roten Verfolgers");
+        textfieldHint.setText("Linksklick auf die gewünschte Startposition des Roten Verfolgers");
     }//GEN-LAST:event_buttonPosChaserRedActionPerformed
 
     private void checkboxChaserBlueItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxChaserBlueItemStateChanged
         if (checkboxChaserBlue.isSelected()) {
             simulation.chaserBlueEnabled = true;
-            if (simulation.dataChaserRed.size() < 2) {
+            if (!simulation.next) {
+                sliderVelChaserBlue.setEnabled(true);
                 buttonPosChaserBlue.setEnabled(true);
-            } else {
-                buttonPosChaserBlue.setEnabled(false);
             }
         } else {
             simulation.chaserBlueEnabled = false;
             buttonPosChaserBlue.setEnabled(false);
+            sliderVelChaserBlue.setEnabled(false);
         }
         animation.repaint();
     }//GEN-LAST:event_checkboxChaserBlueItemStateChanged
@@ -735,14 +738,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private void checkboxChaserRedItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkboxChaserRedItemStateChanged
         if (checkboxChaserRed.isSelected()) {
             simulation.chaserRedEnabled = true;
-            if (simulation.dataChaserRed.size() < 2) {
+
+            if (!simulation.next) {
+                sliderVelChaserRed.setEnabled(true);
                 buttonPosChaserRed.setEnabled(true);
-            } else {
-                buttonPosChaserRed.setEnabled(false);
             }
         } else {
             simulation.chaserRedEnabled = false;
             buttonPosChaserRed.setEnabled(false);
+            sliderVelChaserRed.setEnabled(false);
         }
         animation.repaint();
     }//GEN-LAST:event_checkboxChaserRedItemStateChanged
@@ -799,17 +803,17 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         if (simulation.paintRunnerDirection && !simulation.mouseControlEnabled) {
             simulation.paintRunnerDirection = false;
             simulation.paintRunnerDirectionDone = true;
-            textfiledStatus.setText("START um zu beginnen");
+            textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
         }
         setStartingPosition(evt);
     }//GEN-LAST:event_animationMouseClicked
 
     private void animationComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_animationComponentResized
         simulation.stop();
-            if (buttonOnOff.getText().equals("STOP")) {
-                buttonOnOff.setText("START");
-                uiSetNotRunning();
-            }
+        if (buttonOnOff.getText().equals("STOP")) {
+            buttonOnOff.setText("START");
+            uiSetNotRunning();
+        }
         simulation.init();
         animation.repaint();
     }//GEN-LAST:event_animationComponentResized
@@ -876,9 +880,9 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Vector direction;
         if (simulation.paintRunnerDirection) {
             if (!comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
-                textfiledStatus.setText("Mauscursor in Zielrichtung bewegen, Linksklick um die Richtung zu übernehmen");
+                textfieldHint.setText("Mauscursor in Zielrichtung bewegen, Linksklick um die Richtung zu übernehmen");
             } else {
-                textfiledStatus.setText("START um zu beginnen");
+                textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
             }
             direction = frameToMath(trimMouseXYtoAnimationBoudaries(evt)); // }:o[
             simulation.runnerDirectionLine.x1 = simulation.dataRunner.get(simulation.dataRunner.size() - 1).x;
@@ -886,7 +890,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             simulation.runnerDirectionLine.x2 = direction.x;
             simulation.runnerDirectionLine.y2 = direction.y;
             if (simulation.mouseControlEnabled && comboBoxForm.getSelectedItem().equals("Gerade")) {
-                textfiledStatus.setText("Maussteuerung ist eingeschaltet");
+                textfieldHint.setText("Maussteuerung ist eingeschaltet");
                 Double stepLength = Math.abs(Vector.length(new Vector(simulation.runnerDirectionLine.x1 - simulation.runnerDirectionLine.x2,
                         simulation.runnerDirectionLine.y1 - simulation.runnerDirectionLine.y2)));
                 if (stepLength > 10.0) {
@@ -908,19 +912,19 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             simulation.paintRunnerDirection = true;
             setStartingDirection(evt);
             if (!comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
-                textfiledStatus.setText("Mauscursor in Zielrichtung bewegen, Linksklick um die Richtung zu übernehmen");
+                textfieldHint.setText("Mauscursor in Zielrichtung bewegen, Linksklick um die Richtung zu übernehmen");
             } else {
-                textfiledStatus.setText("START um zu beginnen");
+                textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
             }
             buttonReset.setEnabled(true);
         } else if (eventFlagPosition.equals("pos_cb")) {
             addVectorToList(simulation.dataChaserBlue, coordinate);
             buttonReset.setEnabled(true);
-            textfiledStatus.setText("START um zu beginnen");
+            textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
         } else if (eventFlagPosition.equals("pos_cr")) {
             addVectorToList(simulation.dataChaserRed, coordinate);
             buttonReset.setEnabled(true);
-            textfiledStatus.setText("START um zu beginnen");
+            textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
         }
         sliderAnimationScale.setEnabled(false);
         simulation.fireCoordinateChange();
@@ -997,7 +1001,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField jTextField2;
     private JNumberField numberfieldAnimationScale;
     private JNumberField numberfieldPosChaserBlueX;
@@ -1010,12 +1013,13 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
     private JNumberField numberfieldVelChaserBlue;
     private JNumberField numberfieldVelChaserRed;
     private JNumberField numberfieldVelRunner;
+    private javax.swing.JPanel panelHint;
     private javax.swing.JSlider sliderAnimationScale;
     private javax.swing.JSlider sliderRiverStepLength;
     private javax.swing.JSlider sliderVelChaserBlue;
     private javax.swing.JSlider sliderVelChaserRed;
     private javax.swing.JSlider sliderVelRunner;
-    private javax.swing.JTextField textfiledStatus;
+    private javax.swing.JTextField textfieldHint;
     private javax.swing.JPanel ui;
     // End of variables declaration//GEN-END:variables
 

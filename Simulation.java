@@ -37,6 +37,10 @@ public class Simulation implements MathPainter, Runnable {
     public double riverCurrentVelocity = 0.001;
     private double stepLengthRiver = 0.001;
     public double radius = 0.15;
+    private double timeScale = 1;
+//    private long timeStop = System.currentTimeMillis();
+//    private long timeStart = System.currentTimeMillis();
+//    private long timeBetweenRepaints = 0;
 
     Graphics2D g;
     final double guesswork = 65.0; //Faulheit
@@ -56,7 +60,7 @@ public class Simulation implements MathPainter, Runnable {
     public Line2D.Double runnerDirectionLine = new Line2D.Double();
 
     //Declaraions pulled out of run()
-    private final double hitbox = 0.03;
+    private double hitbox = 0.03;
     private double nextTrigonX, nextTrigonY;
     private double amplitude;
     private double scale;
@@ -198,10 +202,12 @@ public class Simulation implements MathPainter, Runnable {
     }
 
     public void init() {
-        stepTime = 10;
+        stepTime = 20;
+        timeScale = stepTime / 10.0;
         next = false;
         timePassed = 0;
         runnerDirection = new Vector(1, 0);
+        hitbox = 0.03 * timeScale;
 
         if (dataRunner.isEmpty()) {
             runnerDirectionLine.setLine(-animationScale * Math.PI, 0, 100, 0);
@@ -212,9 +218,16 @@ public class Simulation implements MathPainter, Runnable {
 
         //runner
         if (dataRunner.isEmpty()) {
-            dataRunner.add(new Vector(-animationScale * Math.PI, 0));
-            runnerDirectionLine.setLine(-animationScale * Math.PI, 0, 100, 0);
-            alpha = 0.0;
+            Vector runnerStartingPosition = new Vector(-animationScale * Math.PI, 0);
+            if (runnerStartingPosition.x < -boundingBox_x) {
+                dataRunner.add(new Vector(-boundingBox_x + 2 * hitbox, 0));
+                runnerDirectionLine.setLine(-boundingBox_x, 0, boundingBox_x, 0);
+                alpha = 0.0;
+            } else {
+                dataRunner.add(runnerStartingPosition);
+                runnerDirectionLine.setLine(-animationScale * Math.PI, 0, boundingBox_x, 0);
+                alpha = 0.0;
+            }
         }
         //chaser1
         if (dataChaserBlue.isEmpty()) {
@@ -254,6 +267,11 @@ public class Simulation implements MathPainter, Runnable {
                 //tue nichts
             }
 
+//            timeStart = System.currentTimeMillis();
+//            timeBetweenRepaints = (timeStart - timeStop);
+//            System.out.println("" + timeBetweenRepaints);
+//            stepTime = timeBetweenRepaints;
+//            timeScale = stepTime / 10.0;
             Vector runnerLastInList = dataRunner.get(dataRunner.size() - 1);
             Vector chaserBlueLastInList = dataChaserBlue.get(dataChaserBlue.size() - 1);
             Vector chaserRedLastInList = dataChaserRed.get(dataChaserRed.size() - 1);
@@ -281,10 +299,10 @@ public class Simulation implements MathPainter, Runnable {
 
             alpha = Math.atan2(runnerDirectionLine.y2 - runnerDirectionLine.y1, runnerDirectionLine.x2 - runnerDirectionLine.x1);
             //River
-            stepLengthRiver = riverCurrentVelocity;
+            stepLengthRiver = timeScale * riverCurrentVelocity;
             //line
             if (runnerMode.equals("Gerade")) {
-                stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
+                stepRunner = Vector.scaleToLength(runnerDirection, timeScale * stepLengthRunner);
                 nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByAngle(stepRunner, alpha));
                 if (riverEnabled) {
                     nextRunner = applyRiverCurrent(nextRunner);
@@ -293,7 +311,7 @@ public class Simulation implements MathPainter, Runnable {
             } else if (runnerMode.equals("Sinus")) {
                 nextTrigonY = amplitude * (Math.cos((2 * Math.PI * scale) * timePassed));
                 runnerDirection = new Vector(stepLengthRunner, nextTrigonY);
-                stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
+                stepRunner = Vector.scaleToLength(runnerDirection, timeScale * stepLengthRunner);
                 nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByAngle(stepRunner, alpha));
                 if (riverEnabled) {
                     nextRunner = applyRiverCurrent(nextRunner);
@@ -303,8 +321,8 @@ public class Simulation implements MathPainter, Runnable {
                 nextTrigonX = amplitude * (Math.sin((2 * Math.PI * scale / 5) * timePassed));
                 nextTrigonY = amplitude * (Math.cos((2 * Math.PI * scale / 5) * timePassed));
                 runnerDirection = new Vector(nextTrigonX, nextTrigonY);
-                stepRunner = Vector.scaleToLength(runnerDirection, stepLengthRunner);
-                nextRunner = Vector.addUp(runnerLastInList, Vector.scaleToLength(stepRunner, stepLengthRunner));
+                stepRunner = Vector.scaleToLength(runnerDirection, timeScale * stepLengthRunner);
+                nextRunner = Vector.addUp(runnerLastInList, stepRunner);
                 if (riverEnabled) {
                     nextRunner = applyRiverCurrent(nextRunner);
                 }
@@ -314,7 +332,7 @@ public class Simulation implements MathPainter, Runnable {
             timePassed += stepTime;
 
             //calculating next chaserBlue point
-            stepChaserBlue = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserBlueLastInList), stepLengthChaserBlue);
+            stepChaserBlue = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserBlueLastInList), timeScale * stepLengthChaserBlue);
             if (chaserBlueEnabled) {
                 nextChaserBlue = (Vector.addUp(chaserBlueLastInList, stepChaserBlue));
             } else {
@@ -324,7 +342,7 @@ public class Simulation implements MathPainter, Runnable {
                 nextChaserBlue = applyRiverCurrent(nextChaserBlue);
             }
             //calculating next chaserRed point
-            stepChaserRed = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserRedLastInList), stepLengthChaserRed);
+            stepChaserRed = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserRedLastInList), timeScale * stepLengthChaserRed);
             if (chaserRedEnabled) {
                 nextChaserRed = (Vector.addUp(chaserRedLastInList, stepChaserRed));
             } else {
@@ -353,6 +371,8 @@ public class Simulation implements MathPainter, Runnable {
             }
 
             animation.repaint();
+
+//            timeStop = System.currentTimeMillis();
         }
         step = null;
     }

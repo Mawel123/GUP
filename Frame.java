@@ -136,12 +136,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         jTextField2.setText("jTextField2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Verfolgung");
         setMinimumSize(new java.awt.Dimension(850, 650));
 
         Field.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
         Field.setLayout(new java.awt.BorderLayout());
 
         animation.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        animation.setMinimumSize(new java.awt.Dimension(850, 30));
         animation.setPreferredSize(new java.awt.Dimension(601, 338));
         animation.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -160,6 +162,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         });
         Field.add(animation, java.awt.BorderLayout.CENTER);
 
+        ui.setBackground(new java.awt.Color(204, 204, 204));
         ui.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         ui.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         ui.setMinimumSize(new java.awt.Dimension(850, 210));
@@ -347,7 +350,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.insets = new java.awt.Insets(1, 2, 0, 2);
         ui.add(numberfieldPosChaserRedX, gridBagConstraints);
 
-        jLabel1.setText("Geschwindigkeit:");
+        jLabel1.setText("Geschwindigkeit [m/s]:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 0;
@@ -401,7 +404,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         ui.add(comboBoxForm, gridBagConstraints);
 
@@ -426,6 +428,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderVelRunner.setMinorTickSpacing(2);
         sliderVelRunner.setPaintTicks(true);
         sliderVelRunner.setToolTipText("Ziel");
+        sliderVelRunner.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 2)));
         sliderVelRunner.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderVelRunner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -435,14 +438,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
+        gridBagConstraints.ipadx = 10;
         ui.add(sliderVelRunner, gridBagConstraints);
 
         sliderVelChaserBlue.setMajorTickSpacing(10);
         sliderVelChaserBlue.setMinorTickSpacing(2);
         sliderVelChaserBlue.setPaintTicks(true);
         sliderVelChaserBlue.setToolTipText("blauer Verfolger");
+        sliderVelChaserBlue.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(57, 102, 236), 2)));
         sliderVelChaserBlue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderVelChaserBlue.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -452,14 +455,14 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
+        gridBagConstraints.ipadx = 10;
         ui.add(sliderVelChaserBlue, gridBagConstraints);
 
         sliderVelChaserRed.setMajorTickSpacing(10);
         sliderVelChaserRed.setMinorTickSpacing(2);
         sliderVelChaserRed.setPaintTicks(true);
         sliderVelChaserRed.setToolTipText("roter Verfolger");
+        sliderVelChaserRed.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 51, 51), 2)));
         sliderVelChaserRed.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderVelChaserRed.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -470,7 +473,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.ipadx = 10;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
         ui.add(sliderVelChaserRed, gridBagConstraints);
 
         jLabel5.setText("x:");
@@ -543,7 +545,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         sliderRiverStepLength.setMinimum(-50);
         sliderRiverStepLength.setPaintLabels(true);
         sliderRiverStepLength.setPaintTicks(true);
-        sliderRiverStepLength.setToolTipText("Geschwindigkeit der Flusstömung");
+        sliderRiverStepLength.setToolTipText("Geschwindigkeit der Flusstömung, von links nach rechts ist positiv");
         sliderRiverStepLength.setValue(5);
         sliderRiverStepLength.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sliderRiverStepLength.setPreferredSize(new java.awt.Dimension(120, 31));
@@ -572,10 +574,16 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         Field.add(ui, java.awt.BorderLayout.SOUTH);
 
-        jPanel2.setLayout(new java.awt.GridLayout());
+        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
-        textfiledStatus.setText("START um zu beginnen");
+        textfiledStatus.setBackground(new java.awt.Color(240, 240, 240));
+        textfiledStatus.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        textfiledStatus.setForeground(new java.awt.Color(0, 102, 255));
+        textfiledStatus.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
+        textfiledStatus.setBorder(null);
+        textfiledStatus.setCaretColor(new java.awt.Color(204, 204, 204));
         textfiledStatus.setFocusable(false);
+        textfiledStatus.setPreferredSize(new java.awt.Dimension(850, 26));
         jPanel2.add(textfiledStatus);
 
         Field.add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -868,7 +876,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         Vector direction;
         if (simulation.paintRunnerDirection) {
             if (!comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
-                textfiledStatus.setText("Zielrichtung anklicken");
+                textfiledStatus.setText("Mauscursor in Zielrichtung bewegen, Linksklick um die Richtung zu übernehmen");
             } else {
                 textfiledStatus.setText("START um zu beginnen");
             }
@@ -900,7 +908,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
             simulation.paintRunnerDirection = true;
             setStartingDirection(evt);
             if (!comboBoxForm.getSelectedItem().toString().equals("Kreis")) {
-                textfiledStatus.setText("Zielrichtung anklicken");
+                textfiledStatus.setText("Mauscursor in Zielrichtung bewegen, Linksklick um die Richtung zu übernehmen");
             } else {
                 textfiledStatus.setText("START um zu beginnen");
             }

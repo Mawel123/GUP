@@ -34,10 +34,10 @@ public class Simulation implements MathPainter, Runnable {
     public double stepLengthRunner = 0.01;
     public double stepLengthChaserBlue = 0.01;
     public double stepLengthChaserRed = 0.01;
-    public double riverCurrentVelocity = 0.001;
+    public double riverCurrentVelocity = 0.005;
     private double stepLengthRiver = 0.001;
     public double radius = 0.15;
-    private double timeScale = 1;
+    protected double timeScale = 1;
 //    private long timeStop = System.currentTimeMillis();
 //    private long timeStart = System.currentTimeMillis();
 //    private long timeBetweenRepaints = 0;
@@ -140,7 +140,7 @@ public class Simulation implements MathPainter, Runnable {
     public void mathPaint(Graphics2D g) {
         this.g = g;
         animation.setZero(animation.getWidth() / 2, animation.getHeight() / 2);
-        animation.setBackground(Color.black);
+        animation.setBackground(Color.darkGray);
 
         if (mouseControlEnabled && paintRunnerDirection && (runnerMode.equals("Gerade") || runnerMode.equals("Sinus"))) {
             g.setColor(Color.lightGray);
@@ -278,12 +278,12 @@ public class Simulation implements MathPainter, Runnable {
 
             //hit detection
             if (Vector.length(Vector.subtract(chaserBlueLastInList, runnerLastInList)) <= hitbox) {
-                pcs.firePropertyChange("hit", null, "der blaue Verfolger");
+                pcs.firePropertyChange("hit", null, "Der blaue Verfolger");
                 hit = true;
             }
 
             if (Vector.length(Vector.subtract(chaserRedLastInList, runnerLastInList)) <= hitbox) {
-                pcs.firePropertyChange("hit", null, "der rote Verfolger");
+                pcs.firePropertyChange("hit", null, "Der rote Verfolger");
                 hit = true;
             }
 
@@ -306,6 +306,7 @@ public class Simulation implements MathPainter, Runnable {
                 nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByAngle(stepRunner, alpha));
                 if (riverEnabled) {
                     nextRunner = applyRiverCurrent(nextRunner);
+                    pcs.firePropertyChange("velocityChangeRunner", null, Vector.length(Vector.subtract(nextRunner, runnerLastInList)));
                 }
                 //sine
             } else if (runnerMode.equals("Sinus")) {
@@ -315,6 +316,7 @@ public class Simulation implements MathPainter, Runnable {
                 nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByAngle(stepRunner, alpha));
                 if (riverEnabled) {
                     nextRunner = applyRiverCurrent(nextRunner);
+                    pcs.firePropertyChange("velocityChangeRunner", null, Vector.length(Vector.subtract(nextRunner, runnerLastInList)));
                 }
                 //circle
             } else if (runnerMode.equals("Kreis")) {
@@ -325,6 +327,7 @@ public class Simulation implements MathPainter, Runnable {
                 nextRunner = Vector.addUp(runnerLastInList, stepRunner);
                 if (riverEnabled) {
                     nextRunner = applyRiverCurrent(nextRunner);
+                    pcs.firePropertyChange("velocityChangeRunner", null, Vector.length(Vector.subtract(nextRunner, runnerLastInList)));
                 }
             } else {
                 nextRunner = runnerLastInList;
@@ -340,6 +343,7 @@ public class Simulation implements MathPainter, Runnable {
             }
             if (riverEnabled) {
                 nextChaserBlue = applyRiverCurrent(nextChaserBlue);
+                pcs.firePropertyChange("velocityChangeChaserBlue", null, Vector.length(Vector.subtract(nextChaserBlue, chaserBlueLastInList)));
             }
             //calculating next chaserRed point
             stepChaserRed = Vector.scaleToLength(Vector.subtract(runnerLastInList, chaserRedLastInList), timeScale * stepLengthChaserRed);
@@ -350,6 +354,7 @@ public class Simulation implements MathPainter, Runnable {
             }
             if (riverEnabled) {
                 nextChaserRed = applyRiverCurrent(nextChaserRed);
+                pcs.firePropertyChange("velocityChangeChaserRed", null, Vector.length(Vector.subtract(nextChaserRed, chaserRedLastInList)));
             }
 
             //River

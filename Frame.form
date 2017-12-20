@@ -261,6 +261,9 @@
             <Component class="JNumberField" name="numberfieldPosRunnerY">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -273,6 +276,9 @@
             <Component class="JNumberField" name="numberfieldPosRunnerX">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -285,6 +291,9 @@
             <Component class="JNumberField" name="numberfieldPosChaserBlueY">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -297,6 +306,9 @@
             <Component class="JNumberField" name="numberfieldPosChaserBlueX">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -309,6 +321,9 @@
             <Component class="JNumberField" name="numberfieldPosChaserRedY">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -321,6 +336,9 @@
             <Component class="JNumberField" name="numberfieldPosChaserRedX">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -343,6 +361,9 @@
             <Component class="JNumberField" name="numberfieldVelRunner">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -355,6 +376,9 @@
             <Component class="JNumberField" name="numberfieldVelChaserBlue">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -367,6 +391,9 @@
             <Component class="JNumberField" name="numberfieldVelChaserRed">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -407,6 +434,9 @@
             </Component>
             <Component class="JNumberField" name="numberfieldAnimationScale">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
@@ -573,8 +603,8 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="99" red="33" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Maussteuerung"/>
-                <Property name="toolTipText" type="java.lang.String" value="Aktivieren um das Ziel mit der Maus steuern zu k&#xf6;nnen"/>
+                <Property name="text" type="java.lang.String" value="Echtzeitmaussteuerung"/>
+                <Property name="toolTipText" type="java.lang.String" value="Aktivieren um w&#xe4;hrend der Animation das Ziel mit der Maus steuern zu k&#xf6;nnen"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Handcursor"/>
                 </Property>
@@ -592,7 +622,7 @@
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="Fluss"/>
-                <Property name="toolTipText" type="java.lang.String" value="Fluss AN/AUS"/>
+                <Property name="toolTipText" type="java.lang.String" value="Wenn sich das Ziel oder die Verfolger im hellbaluen Rechteck befinden, werden die von dessen St&#xf6;mung mitgerissen."/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                   <Color id="Handcursor"/>
                 </Property>
@@ -632,6 +662,9 @@
             </Component>
             <Component class="JNumberField" name="numberfieldRiverStepLength">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="e6" green="e6" red="e6" type="rgb"/>
+                </Property>
                 <Property name="columns" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>

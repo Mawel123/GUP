@@ -511,6 +511,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
         ui.add(sliderAnimationScale, gridBagConstraints);
 
+        checkboxMouseControl.setForeground(new java.awt.Color(51, 153, 0));
         checkboxMouseControl.setText("Maussteuerung");
         checkboxMouseControl.setToolTipText("Aktivieren um das Ziel mit der Maus steuern zu können");
         checkboxMouseControl.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -578,6 +579,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         textfieldHint.setBackground(new java.awt.Color(240, 240, 240));
         textfieldHint.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        textfieldHint.setForeground(new java.awt.Color(51, 153, 0));
         textfieldHint.setText("START um zu beginnen, Positioniern um Startpositionen und ggf. Startrichtung zu ändern");
         textfieldHint.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textfieldHint.setCaretColor(new java.awt.Color(204, 204, 204));

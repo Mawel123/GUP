@@ -6,14 +6,12 @@
 
 /**
  *
- * @author Mawel
+* @author Pavel Malkov
  */
 public class Vector {
 
     public double x;
-// Konstruktor
     public double y;
-// Konstruktor
 
     public Vector(double x, double y) {
         this.x = x;
@@ -64,28 +62,28 @@ public class Vector {
     /**
      * @return the x
      */
-    protected double getX() {
+    public double getX() {
         return x;
     }
 
     /**
      * @param x the x to set
      */
-    protected void setX(double x) {
+    public void setX(double x) {
         this.x = x;
     }
 
     /**
      * @return the y
      */
-    protected double getY() {
+    public double getY() {
         return y;
     }
 
     /**
      * @param y the y to set
      */
-    protected void setY(double y) {
+   public void setY(double y) {
         this.y = y;
     }
 }

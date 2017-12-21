@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 /**
  *
- * @author Mawel
+ * @author Pavel Malkov
  */
 public class Frame extends javax.swing.JFrame implements PropertyChangeListener {
 
@@ -83,15 +83,15 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         }
         
         if (evt.getPropertyName().equals("velocityChangeRunner")) {
-            numberfieldVelRunner.setText(String.format("%6.2f", (double)evt.getNewValue() * 100 / simulation.timeScale));
+            numberfieldVelRunner.setText(String.format("%6.2f", (double)evt.getNewValue() * 100 / simulation.getTimeScale()));
         }
         
         if (evt.getPropertyName().equals("velocityChangeChaserBlue")) {
-            numberfieldVelChaserBlue.setText(String.format("%6.2f", (double)evt.getNewValue() * 100 / simulation.timeScale));
+            numberfieldVelChaserBlue.setText(String.format("%6.2f", (double)evt.getNewValue() * 100 / simulation.getTimeScale()));
         }
         
         if (evt.getPropertyName().equals("velocityChangeChaserRed")) {
-            numberfieldVelChaserRed.setText(String.format("%6.2f", (double)evt.getNewValue() * 100 / simulation.timeScale));
+            numberfieldVelChaserRed.setText(String.format("%6.2f", (double)evt.getNewValue() * 100 / simulation.getTimeScale()));
         }
         
         
@@ -415,7 +415,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         ui.add(numberfieldVelChaserRed, gridBagConstraints);
 
         comboBoxForm.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gerade", "Sinus", "Kreis" }));
-        comboBoxForm.setToolTipText("Bahnfrom des Verfolgten Ziels auswählen");
+        comboBoxForm.setToolTipText("Bahnkurve des Verfolgten Ziels auswählen");
         comboBoxForm.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         comboBoxForm.setPreferredSize(new java.awt.Dimension(80, 39));
         comboBoxForm.addItemListener(new java.awt.event.ItemListener() {
@@ -550,7 +550,6 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         ui.add(checkboxMouseControl, gridBagConstraints);
 
-        checkboxRiverEnabled.setSelected(true);
         checkboxRiverEnabled.setText("Fluss");
         checkboxRiverEnabled.setToolTipText("Wenn sich das Ziel oder die Verfolger im hellbaluen Rechteck befinden, werden die von dessen Stömung mitgerissen.");
         checkboxRiverEnabled.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -600,7 +599,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
 
         Field.add(ui, java.awt.BorderLayout.SOUTH);
 
-        panelHint.setLayout(new java.awt.GridLayout(1, 0));
+        panelHint.setLayout(new java.awt.BorderLayout());
 
         textfieldHint.setBackground(new java.awt.Color(240, 240, 240));
         textfieldHint.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -611,7 +610,7 @@ public class Frame extends javax.swing.JFrame implements PropertyChangeListener 
         textfieldHint.setFocusable(false);
         textfieldHint.setPreferredSize(new java.awt.Dimension(850, 26));
         textfieldHint.setSelectionColor(new java.awt.Color(0, 0, 0));
-        panelHint.add(textfieldHint);
+        panelHint.add(textfieldHint, java.awt.BorderLayout.SOUTH);
 
         Field.add(panelHint, java.awt.BorderLayout.NORTH);
 

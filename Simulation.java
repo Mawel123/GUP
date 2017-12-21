@@ -209,8 +209,8 @@ public class Simulation implements MathPainter, Runnable {
     }
 
     protected void init() {
-        stepTime = 20;
-        timeScale = stepTime / 10.0;
+        stepTime = 20; //Curve Resolution
+        timeScale = 2 * stepTime / 10.0;
         next = false;
         timePassed = 0;
         runnerDirection = new Vector(1, 0);
@@ -317,7 +317,7 @@ public class Simulation implements MathPainter, Runnable {
                 }
                 //sine
             } else if (runnerMode.equals("Sinus")) {
-                nextTrigonY = amplitude * (Math.cos((2 * Math.PI * scale) * timePassed));
+                nextTrigonY = amplitude * (Math.cos((4 * Math.PI * scale) * timePassed));
                 runnerDirection = new Vector(stepLengthRunner, nextTrigonY);
                 stepRunner = Vector.scaleToLength(runnerDirection, getTimeScale() * stepLengthRunner);
                 nextRunner = Vector.addUp(runnerLastInList, Vector.rotateByAngle(stepRunner, alpha));
@@ -327,8 +327,8 @@ public class Simulation implements MathPainter, Runnable {
                 }
                 //circle
             } else if (runnerMode.equals("Kreis")) {
-                nextTrigonX = amplitude * (Math.sin((2 * Math.PI * scale / 5) * timePassed));
-                nextTrigonY = amplitude * (Math.cos((2 * Math.PI * scale / 5) * timePassed));
+                nextTrigonX = amplitude * (Math.sin((4 * Math.PI * scale / 5) * timePassed));
+                nextTrigonY = amplitude * (Math.cos((4 * Math.PI * scale / 5) * timePassed));
                 runnerDirection = new Vector(nextTrigonX, nextTrigonY);
                 stepRunner = Vector.scaleToLength(runnerDirection, getTimeScale() * stepLengthRunner);
                 nextRunner = Vector.addUp(runnerLastInList, stepRunner);

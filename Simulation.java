@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 /**
  *
-* @author Pavel Malkov
+ * @author Pavel Malkov
  */
 public class Simulation implements MathPainter, Runnable {
 
@@ -30,26 +30,19 @@ public class Simulation implements MathPainter, Runnable {
     private Double alpha;
     public boolean mouseControlEnabled = false;
     public double animationScale = 1;
-
-    public double stepLengthRunner = 0.01;
-    public double stepLengthChaserBlue = 0.01;
-    public double stepLengthChaserRed = 0.01;
-    public double riverCurrentVelocity = 0.005;
+    protected double stepLengthRunner = 0.01;
+    protected double stepLengthChaserBlue = 0.01;
+    protected double stepLengthChaserRed = 0.01;
+    protected double riverCurrentVelocity = 0.005;
     private double stepLengthRiver = 0.001;
-    public double radius = 0.15;
+    protected double radius = 0.15;
     private double timeScale = 1;
-//    private long timeStop = System.currentTimeMillis();
-//    private long timeStart = System.currentTimeMillis();
-//    private long timeBetweenRepaints = 0;
-
-    Graphics2D g;
+    private Graphics2D g;
     private final double guesswork = 65.0; //Faulheit
     private double boundingBox_x, boundingBox_y;
-
     protected ArrayList<Vector> dataRunner = new ArrayList<>();
     protected ArrayList<Vector> dataChaserBlue = new ArrayList<>();
     protected ArrayList<Vector> dataChaserRed = new ArrayList<>();
-
     protected boolean chaserBlueEnabled = true;
     protected boolean chaserRedEnabled = true;
     protected boolean paintRunnerDirection = false;
@@ -76,6 +69,10 @@ public class Simulation implements MathPainter, Runnable {
     private Line2D.Double line;
     private Ellipse2D.Double circle;
 
+//    private long timeStop = System.currentTimeMillis();
+//    private long timeStart = System.currentTimeMillis();
+//    private long timeBetweenRepaints = 0;
+    
     /**
      * @return the timeScale
      */
@@ -315,7 +312,7 @@ public class Simulation implements MathPainter, Runnable {
                     nextRunner = applyRiverCurrent(nextRunner);
                     pcs.firePropertyChange("velocityChangeRunner", null, Vector.length(Vector.subtract(nextRunner, runnerLastInList)));
                 }
-                //sine
+            //sine
             } else if (runnerMode.equals("Sinus")) {
                 nextTrigonY = amplitude * (Math.cos((4 * Math.PI * scale) * timePassed));
                 runnerDirection = new Vector(stepLengthRunner, nextTrigonY);
@@ -325,7 +322,7 @@ public class Simulation implements MathPainter, Runnable {
                     nextRunner = applyRiverCurrent(nextRunner);
                     pcs.firePropertyChange("velocityChangeRunner", null, Vector.length(Vector.subtract(nextRunner, runnerLastInList)));
                 }
-                //circle
+            //circle
             } else if (runnerMode.equals("Kreis")) {
                 nextTrigonX = amplitude * (Math.sin((4 * Math.PI * scale / 5) * timePassed));
                 nextTrigonY = amplitude * (Math.cos((4 * Math.PI * scale / 5) * timePassed));
@@ -363,9 +360,7 @@ public class Simulation implements MathPainter, Runnable {
                 nextChaserRed = applyRiverCurrent(nextChaserRed);
                 pcs.firePropertyChange("velocityChangeChaserRed", null, Vector.length(Vector.subtract(nextChaserRed, chaserRedLastInList)));
             }
-
-            //River
-            stepLengthRiver = riverCurrentVelocity * animationScale;
+            
             //building arraylists
             dataRunner.add(nextRunner);
             dataChaserBlue.add(nextChaserBlue);
